@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070b14">
+<title>3D PRINTING PLAN - A Tuấn hust 0969.846.222</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<style>
+:root{--bg:#070b14;--panel:#0e1524;--ink:#0a111f;--line:#1f2b45;--soft:#18233a;--text:#f1f5f9;--muted:#93a4c0;
+--cyan:#00e5ff;--purple:#8b5cf6;--green:#34d399;--amber:#fbbf24;--rose:#fb4a6b;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+/* Cỡ chữ tự co giãn theo cả chiều rộng và chiều cao màn hình */
+html{font-size:clamp(13px,min(.55vw + 8px,1.1vh + 6px),19px)}
+body{font-family:'Be Vietnam Pro',system-ui,'Segoe UI',Roboto,sans-serif;color:var(--text);min-height:100dvh;padding:.75rem;display:flex;flex-direction:column;gap:.75rem;user-select:none;-webkit-tap-highlight-color:transparent;
+background:radial-gradient(60rem 30rem at 0% -10%,rgba(0,229,255,.09),transparent 60%),radial-gradient(50rem 30rem at 100% 0%,rgba(139,92,246,.10),transparent 60%),var(--bg)}
+input,select{user-select:text;font-family:inherit}
+button{font-family:inherit;cursor:pointer}
+.hidden{display:none!important}
+.card{background:linear-gradient(180deg,#111a2d,var(--panel));border:1px solid var(--line);border-radius:1rem;box-shadow:0 .6rem 1.6rem rgba(0,0,0,.35);padding:.9rem;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding-bottom:.6rem;border-bottom:1px solid var(--line);flex:none}
+.card-head h2{font-size:.9rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* HEADER */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;flex:none;padding:.7rem .9rem}
+.brand{display:flex;align-items:center;gap:.9rem;min-width:0}
+.logo{width:3.2rem;height:2.5rem;border-radius:.9rem;background:linear-gradient(135deg,var(--cyan),var(--purple));display:grid;place-items:center;font-size:1.5rem;color:#fff;flex:none}
+.brand h1{font-size:3.2rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,var(--cyan),#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.15}
+.brand p{font-size:.8rem;color:var(--muted);font-weight:700;letter-spacing:.05em}
+.tools{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.clock{background:var(--ink);border:1px solid var(--line);border-radius:.8rem;padding:.35rem 1rem;text-align:center;min-width:9.5rem}
+#current-time{display:block;font-family:var(--mono);font-weight:800;font-size:1.9rem;color:var(--cyan);line-height:1.1;text-shadow:0 0 1rem rgba(0,229,255,.35)}
+#current-date{font-size:.8rem;color:var(--muted);font-weight:700}
+.btn{border:0;color:#fff;font-weight:800;font-size:.9rem;padding:.7rem 1.1rem;min-height:2.8rem;border-radius:.75rem;display:inline-flex;align-items:center;gap:.5rem;box-shadow:0 .3rem .8rem rgba(0,0,0,.35);transition:transform .1s,filter .15s}
+.btn:hover{filter:brightness(1.12)}.btn:active{transform:scale(.96)}
+.b-green{background:linear-gradient(135deg,#059669,#10b981)}.b-teal{background:linear-gradient(135deg,#047857,#059669)}.b-cyan{background:linear-gradient(135deg,#0891b2,#06b6d4)}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;flex:none}
+.kpi{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.8rem 1rem;border-left:.3rem solid var(--c)}
+.kpi p{font-size:.8rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.kpi h3{font-family:var(--mono);font-size:3rem;font-weight:800;line-height:1.1;color:var(--v,#fff);margin:.1rem 0}
+.kpi span{font-size:.8rem;font-weight:700;color:var(--c);display:flex;align-items:center;gap:.4rem}
+.kpi .ico{width:3.2rem;height:3.2rem;border-radius:.9rem;display:grid;place-items:center;font-size:1.4rem;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent);flex:none}
+
+/* BỐ CỤC */
+#main-layout{display:flex;flex-direction:column;gap:.75rem}
+#main-layout>*{min-width:0}
+.right{display:flex;flex-direction:column;gap:.75rem;min-height:0}
+.row-top{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;flex:none}
+.hero{display:flex;flex-direction:column;gap:.7rem;border-color:rgba(0,229,255,.45);box-shadow:0 0 2rem rgba(0,229,255,.08),0 .6rem 1.6rem rgba(0,0,0,.35);min-height:0}
+.live{display:flex;align-items:center;gap:.55rem;color:var(--cyan)}
+.dot{width:.7rem;height:.7rem;border-radius:50%;background:var(--cyan);animation:ping 1.4s ease-in-out infinite}
+@keyframes ping{0%,100%{box-shadow:0 0 0 0 rgba(0,229,255,.7)}70%{box-shadow:0 0 0 .6rem rgba(0,229,255,0)}}
+.badge{font-size:.8rem;font-weight:800;color:var(--cyan);background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.35);padding:.3rem .7rem;border-radius:.5rem;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.65}}
+.img-frame{position:relative;aspect-ratio:4/3;background:#060a13 repeating-linear-gradient(45deg,transparent 0 .8rem,rgba(255,255,255,.015) .8rem 1.6rem);border:1px solid var(--line);border-radius:.9rem;overflow:hidden}
+.img-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:.4rem}
+.img-change{position:absolute;left:.6rem;top:.6rem;z-index:2;background:rgba(0,0,0,.8);color:#fff;border:1px solid var(--line);border-radius:.6rem;font-size:.85rem;font-weight:800;padding:.5rem .8rem}
+.img-change:hover{background:var(--cyan);color:#06222a}
+.name-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--ink);border:1px solid var(--line);border-radius:.8rem;padding:.6rem 1rem}
+#active-prod-name{font-size:1.5rem;font-weight:900;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-width:0}
+.rate-box{text-align:right;flex:none}
+.rate-box small{display:block;font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+#active-prod-rate{font-family:var(--mono);font-size:3rem;font-weight:800;color:var(--cyan);line-height:1;text-shadow:0 0 1.2rem rgba(0,229,255,.4)}
+.bar{height:1.1rem;background:var(--ink);border:1px solid var(--line);border-radius:99px;padding:.15rem;overflow:hidden;margin:.1rem 0}
+#active-prod-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .5s}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;text-align:center}
+.tile{background:var(--ink);border:1px solid var(--line);border-radius:.8rem;padding:.55rem .3rem}
+.tile small{display:block;font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tile b{font-family:var(--mono);font-size:2.8rem;font-weight:800;line-height:1.1;display:block}
+.tile.sm b{font-size:1.9rem}
+.donut-body{display:flex;gap:.6rem;flex:1;min-height:0}
+.donut-body .donut-area{min-width:0}
+.stat-col{display:flex;flex-direction:column;justify-content:center;gap:.5rem;width:36%;flex:none}
+
+/* BIỂU ĐỒ */
+.donut-card{display:flex;flex-direction:column;gap:.5rem}
+#donut-prod-title{font-size:.95rem;font-weight:800;color:var(--cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.donut-area{position:relative;flex:1;min-height:12rem}
+.donut-area .cv{position:absolute;inset:0}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+#donut-center-rate{font-family:var(--mono);font-size:2.6rem;font-weight:800;line-height:1;text-shadow:0 .15rem .5rem rgba(0,0,0,.8)}
+.donut-center small{font-size:.75rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem}
+.tile .u{font-size:.8rem;color:var(--muted);margin-left:.25rem;font-family:'Be Vietnam Pro',sans-serif}
+
+/* CAMERA: khung cố định tỉ lệ 4:3 */
+.hik-box{margin-top:.1rem;font-size:.78rem;color:#cbd5e1}
+.hik-box summary{cursor:pointer;font-weight:800;color:var(--cyan);padding:.2rem 0}
+.hik-box .row{display:flex;gap:.4rem;margin:.35rem 0}
+.hik-box input{flex:1;min-width:0;background:var(--ink);border:1px solid var(--line);color:#fff;border-radius:.55rem;font-size:.78rem;font-weight:700;min-height:2.1rem;padding:0 .5rem;font-family:var(--mono)}
+.hik-box textarea{width:100%;background:var(--ink);border:1px solid var(--line);color:#a7f3d0;border-radius:.55rem;font-family:var(--mono);font-size:.72rem;padding:.4rem;min-height:3.2rem;resize:vertical}
+.hik-box .note{color:#94a3b8;line-height:1.35;margin:.25rem 0}
+
+#camera-box-container{display:flex;flex-direction:column;gap:.5rem;border-color:rgba(251,74,107,.55);box-shadow:0 0 2rem rgba(251,74,107,.08),0 .6rem 1.6rem rgba(0,0,0,.35)}
+.cam-btns{display:flex;gap:.3rem;align-items:center;flex:none}
+.cam-btns .chip{padding:0 .5rem}
+#camera-box-container .card-head h2{font-size:.82rem;white-space:nowrap}
+.chip{background:var(--ink);color:var(--cyan);border:1px solid var(--line);border-radius:.55rem;font-size:.75rem;font-weight:800;padding:0 .6rem;min-height:2.1rem;display:inline-flex;align-items:center;gap:.35rem}
+.chip:hover{background:#16213a}
+.chip.go{background:#059669;border-color:#059669;color:#fff}.chip.go.is-on{background:#e11d48;border-color:#e11d48}
+.cam-cfg{display:flex;gap:.4rem}
+.cam-cfg select,.cam-cfg input{background:var(--ink);border:1px solid var(--line);color:#fff;border-radius:.55rem;font-size:.8rem;font-weight:700;min-height:2.2rem;padding:0 .5rem;min-width:0}
+.cam-cfg input{flex:1;font-family:var(--mono)}
+.cam-cfg input:focus,.cam-cfg select:focus{outline:none;border-color:var(--cyan)}
+.cam-frame{position:relative;aspect-ratio:4/3;background:#000;border:1px solid var(--line);border-radius:.8rem;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cam-frame img,.cam-frame video,.cam-frame iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}
+.cam-frame::after{content:"";position:absolute;inset:.5rem;pointer-events:none;z-index:2;opacity:.75;
+background:linear-gradient(var(--cyan),var(--cyan)) 0 0/1.1rem 2px no-repeat,linear-gradient(var(--cyan),var(--cyan)) 0 0/2px 1.1rem no-repeat,
+linear-gradient(var(--cyan),var(--cyan)) 100% 0/1.1rem 2px no-repeat,linear-gradient(var(--cyan),var(--cyan)) 100% 0/2px 1.1rem no-repeat,
+linear-gradient(var(--cyan),var(--cyan)) 0 100%/1.1rem 2px no-repeat,linear-gradient(var(--cyan),var(--cyan)) 0 100%/2px 1.1rem no-repeat,
+linear-gradient(var(--cyan),var(--cyan)) 100% 100%/1.1rem 2px no-repeat,linear-gradient(var(--cyan),var(--cyan)) 100% 100%/2px 1.1rem no-repeat}
+.chip.rec{background:#e11d48;color:#fff;border-color:#e11d48;animation:recp 1.2s ease-in-out infinite}
+@keyframes recp{50%{opacity:.65}}
+.cam-flash{position:absolute;inset:0;z-index:4;background:#fff;opacity:.85;pointer-events:none;transition:opacity .35s}
+#cam-off-screen{display:flex;flex-direction:column;align-items:center;gap:.4rem;color:#64748b;font-weight:800;font-size:.9rem;text-align:center}
+#cam-off-screen i{font-size:2.2rem}
+#cam-badge{position:absolute;left:.9rem;top:.8rem;z-index:3;font-size:.75rem;font-weight:800;background:rgba(0,0,0,.65);color:#94a3b8;padding:.2rem .55rem;border-radius:.4rem}
+#cam-badge.on{color:#fff;background:#e11d48}
+.cam-flipped video,.cam-flipped img,.cam-flipped iframe{transform:scaleX(-1)}
+.cam-fullscreen{position:fixed!important;inset:0;width:100vw;height:100dvh;z-index:99999;border-radius:0!important;background:var(--bg)!important;padding:1rem!important}
+.cam-fullscreen .cam-frame{aspect-ratio:auto;flex:1;min-height:0}
+.cam-fullscreen .cam-frame img,.cam-fullscreen .cam-frame video{object-fit:contain}
+
+/* BẢNG */
+.table-card{display:flex;flex-direction:column;padding:0;overflow:hidden;height:32rem}
+.table-card .card-head{padding:.7rem .9rem;background:rgba(10,17,31,.6)}
+#search-input{background:var(--ink);border:1px solid var(--line);border-radius:.6rem;color:#fff;font-size:.9rem;padding:.45rem .75rem;width:12rem;max-width:45%;min-height:2.3rem}
+#search-input:focus{outline:none;border-color:var(--cyan)}
+#product-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+#product-scroll table{width:100%;min-width:50rem;border-collapse:collapse;text-align:left}
+#product-scroll thead th{position:sticky;top:0;z-index:5;background:var(--ink);font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:.7rem .5rem;border-bottom:1px solid var(--line);text-align:center}
+#product-scroll td{padding:.35rem .25rem;border-bottom:1px solid var(--soft);vertical-align:middle;text-align:center}
+#product-scroll td.l,#product-scroll th.l{text-align:left}
+.product-row{cursor:pointer;transition:background .15s}
+.product-row:hover{background:rgba(0,229,255,.06)}
+.product-row-selected{background:rgba(0,229,255,.12)!important}
+.product-row-selected td:first-child{box-shadow:inset .3rem 0 var(--cyan)}
+.show-cell{display:flex;align-items:center;justify-content:center;gap:.5rem}
+.product-select{width:1.4rem;height:1.4rem;accent-color:var(--cyan);cursor:pointer}
+.mv{display:flex;flex-direction:column;gap:.2rem}
+.mv-btn{width:1.7rem;height:1.5rem;border-radius:.4rem;background:var(--ink);border:1px solid var(--line);color:#cbd5e1;font-size:.7rem}
+.mv-btn:hover{color:var(--cyan);border-color:var(--cyan)}
+.thumb{position:relative;width:2.8rem;height:2.8rem;margin:auto;border-radius:.6rem;overflow:hidden;background:var(--ink);border:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb button{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.8);color:#fff;border:0;font-size:.65rem;font-weight:800;padding:.15rem 0}
+.table-input{min-width:0;width:100%;background:var(--ink);border:1px solid #2a3a5c;color:#fff;border-radius:.6rem;font-size:1rem;font-weight:700;padding:.3rem .4rem;min-height:2.3rem}
+.table-input:focus{border-color:var(--cyan);outline:none;box-shadow:0 0 0 3px rgba(0,229,255,.2)}
+input[type=number].table-input{text-align:center;font-family:var(--mono);-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button{display:none}
+.tag{display:inline-block;margin-top:.25rem;font-size:.7rem;font-weight:800;color:var(--cyan);background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.3);border-radius:.35rem;padding:.05rem .4rem}
+.rate-cell .t{display:flex;justify-content:space-between;align-items:baseline;font-weight:800}
+.rate-cell .t b{font-family:var(--mono);font-size:1.15rem}.rate-cell .t span{font-size:.75rem;color:var(--muted);font-family:var(--mono)}
+.rate-cell .b{height:.5rem;background:var(--ink);border-radius:99px;overflow:hidden;margin-top:.25rem}
+.rate-cell .b div{height:100%;border-radius:99px}
+.del{width:2.3rem;height:2.3rem;border-radius:.6rem;background:var(--ink);border:1px solid var(--line);color:#94a3b8}
+.del:hover{color:var(--rose);border-color:var(--rose)}
+
+#toast-container{position:fixed;bottom:1.2rem;right:1.2rem;z-index:999999;pointer-events:none}
+.toast{background:rgba(14,21,36,.97);border:1px solid var(--cyan);color:#fff;padding:.75rem 1.2rem;border-radius:.7rem;box-shadow:0 .6rem 1.6rem rgba(0,0,0,.5);margin-top:.6rem;display:flex;align-items:center;gap:.6rem;font-size:.95rem;font-weight:700;opacity:0;transform:translateY(1rem);transition:all .3s}
+.toast.show{opacity:1;transform:none}.toast i{color:var(--cyan)}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#2a3a5c;border-radius:4px}
+
+/* MÀN HÌNH NGANG: khóa vừa khít 1 màn hình, không cuộn trang */
+@media (min-width:1024px) and (min-height:600px){
+ html,body{height:100%;overflow:hidden}
+ body{height:100dvh}
+ #main-layout{flex:1;min-height:0;display:grid;grid-template-columns:5fr 7fr}
+ .img-frame{aspect-ratio:auto;flex:1;min-height:0}
+ .table-card{flex:1;min-height:0;height:auto}
+ .row-top{flex:none}
+ .row-top>.card{padding:.7rem}
+ .donut-area{min-height:11rem}
+ .cam-frame{aspect-ratio:16/9;flex:none}
+ .kpi h3{font-size:2.5rem}
+ .kpi{padding:.55rem 1rem}
+ .kpi .ico{width:2.8rem;height:2.8rem}
+}
+@media (max-width:640px){
+ .kpis{grid-template-columns:1fr 1fr}.kpi h3{font-size:2.2rem}.kpi .ico{display:none}
+ .row-top{grid-template-columns:1fr}.brand h1{font-size:1.15rem}.tools{width:100%}
+}
+
+/* PLAN TOTAL: bảng database toàn màn hình */
+.b-purple{background:linear-gradient(135deg,#6d28d9,#8b5cf6)}
+#plan-overlay{position:fixed;inset:0;z-index:99998;display:none;flex-direction:column;gap:.75rem;padding:.75rem;background:radial-gradient(60rem 30rem at 0% -10%,rgba(0,229,255,.12),transparent 60%),radial-gradient(50rem 30rem at 100% 0%,rgba(139,92,246,.14),transparent 60%),var(--bg)}
+#plan-overlay.open{display:flex}
+.plan-top{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;flex:none;padding:.7rem .9rem}
+.plan-top h2{font-size:2rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;background:linear-gradient(135deg,var(--cyan),#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:.7rem}
+.plan-top h2 i{-webkit-text-fill-color:var(--cyan);color:var(--cyan)}
+.plan-sum{order:3;width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem}
+.plan-sum div{background:var(--ink);border:1px solid var(--line);border-top:3px solid var(--c,#fff);border-radius:.9rem;padding:.7rem 1.2rem;font-size:.95rem;font-weight:800;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;text-align:center}
+.plan-sum b{display:block;font-family:var(--mono);font-size:3rem;color:var(--c,#fff);line-height:1.15;margin-top:.1rem}
+.plan-tools{display:flex;align-items:center;gap:.6rem}
+#plan-search{background:var(--ink);border:1px solid var(--line);border-radius:.6rem;color:#fff;font-size:.95rem;padding:.45rem .8rem;width:16rem;max-width:40vw;min-height:2.6rem}
+#plan-search:focus{outline:none;border-color:var(--cyan)}
+.plan-card{flex:1;min-height:0;display:flex;flex-direction:column;padding:0;overflow:hidden}
+#plan-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+#plan-scroll table{width:100%;min-width:96rem;border-collapse:separate;border-spacing:0}
+#plan-scroll thead th{--hc:#22d3ee;position:sticky;top:0;z-index:6;padding:1rem .6rem;font-size:.85rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;line-height:1.3;text-align:center;color:#e8f1fb;
+ background:#0b1a33;border-bottom:3px solid var(--hc);border-right:1px solid #22314f}
+#plan-scroll thead th.stick-no{left:0;z-index:9;width:4rem;min-width:4rem}
+#plan-scroll thead th.stick-name{left:4rem;z-index:9;min-width:12rem}
+#plan-scroll td{padding:.5rem .7rem;height:7.6rem;border-bottom:1px solid rgba(120,150,200,.2);border-right:1px solid rgba(120,150,200,.18);text-align:center;vertical-align:middle;font-family:var(--mono);font-weight:800;font-size:1.35rem;background:#1b2740}
+#plan-scroll tbody tr:nth-child(even) td{background:#223052}
+#plan-scroll tbody tr:hover td{background:#2d4170}
+#plan-scroll td.p-no{position:sticky;left:0;z-index:3;width:4rem;min-width:4rem;color:var(--muted);font-size:1.1rem}
+#plan-scroll td.p-name{position:sticky;left:4rem;z-index:3;font-family:'Be Vietnam Pro',system-ui,sans-serif;text-align:left;font-size:1.1rem;font-weight:800;line-height:1.35;color:#fff;min-width:12rem;box-shadow:.3rem 0 .6rem -.3rem rgba(0,0,0,.6)}
+#plan-scroll td.p-purpose{font-family:'Be Vietnam Pro',system-ui,sans-serif;text-align:left;font-size:.95rem;font-weight:600;line-height:1.45;color:#dbe5f3;min-width:15rem;white-space:pre-line}
+#plan-scroll td.p-img{width:14rem}
+.p-img-box{width:12.5rem;height:6.4rem;margin:auto;border-radius:.7rem;overflow:hidden;background:#fff;border:2px solid var(--line);cursor:zoom-in;transition:border-color .15s,transform .15s}
+.p-img-box:hover{border-color:var(--cyan);transform:scale(1.03)}
+.p-img-box img{width:100%;height:100%;object-fit:contain;display:block}
+.p-need{color:#fff}.p-capa{color:var(--cyan)}.p-done{color:#60a5fa}.p-pend{color:#fb7185}.p-pend.zero{color:var(--green)}
+.p-mat,.p-time{color:#e2e8f0}
+#plan-scroll .na{color:#475569}
+.pct{font-weight:900;font-size:1.45rem}
+.pct-bar{height:.55rem;width:80%;margin:.4rem auto 0;background:var(--ink);border:1px solid var(--line);border-radius:99px;overflow:hidden}.pct-bar div{height:100%;border-radius:99px}
+.plan-sync{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer;max-width:11rem;line-height:1.2}.plan-sync input{accent-color:var(--cyan);width:1.1rem;height:1.1rem}
+#img-lightbox{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:2rem;background:rgba(3,6,12,.92);cursor:zoom-out}
+#img-lightbox.open{display:flex}
+#img-lightbox img{max-width:100%;max-height:100%;background:#fff;border-radius:1rem;box-shadow:0 1rem 3rem rgba(0,0,0,.7)}
+.plan-foot{flex:none;padding:.5rem .9rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);font-weight:700;background:rgba(10,17,31,.6)}
+@media (max-width:640px){.plan-sum{grid-template-columns:repeat(2,1fr)}.plan-sum b{font-size:2rem}.plan-top h2{font-size:1.1rem}#plan-search{width:100%;max-width:none}.plan-tools{width:100%}#plan-scroll td{font-size:1.05rem;height:6.2rem}.p-img-box{width:9rem;height:4.6rem}#plan-scroll td.p-img{width:10rem}}
+.pct{font-weight:900;font-size:1.3rem}.pct-bar{height:.45rem;width:70%;margin:.3rem auto 0;background:var(--ink);border-radius:99px;overflow:hidden}.pct-bar div{height:100%;border-radius:99px}
+.plan-sync{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer;max-width:11rem;line-height:1.2}.plan-sync input{accent-color:var(--cyan);width:1.1rem;height:1.1rem}
+/* STATUS (auto from progress) */
+.st{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .55rem;border-radius:99px;font-size:.8rem;font-weight:800;white-space:nowrap;color:var(--sc);background:color-mix(in srgb,var(--sc) 14%,transparent);border:1px solid color-mix(in srgb,var(--sc) 40%,transparent)}
+.s-new{--sc:#94a3b8}.s-run{--sc:var(--cyan)}.s-done{--sc:var(--green)}
+.badge.s-new{color:#94a3b8;background:rgba(148,163,184,.12);border-color:rgba(148,163,184,.35);animation:none}
+.badge.s-done{color:var(--green);background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.4);animation:none}
+.badge i{margin-right:.3rem}
+.pend-val{font-family:var(--mono);font-weight:800;font-size:1.15rem;color:var(--rose)}.pend-val.zero{color:var(--green)}
+.no-cell{font-family:var(--mono);font-weight:800;color:var(--muted)}
+/* ===== AUTH ===== */
+#auth-overlay{position:fixed;inset:0;z-index:100001;display:flex;align-items:center;justify-content:center;padding:1rem;background:radial-gradient(60rem 36rem at 10% -10%,rgba(0,229,255,.18),transparent 60%),radial-gradient(50rem 34rem at 100% 100%,rgba(139,92,246,.22),transparent 60%),#050810;overflow:auto}
+#auth-overlay.off{display:none}
+.au-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.35;animation:auf 9s ease-in-out infinite alternate}
+.au-orb.o1{width:22rem;height:22rem;background:#00e5ff;left:-6rem;top:8%}.au-orb.o2{width:26rem;height:26rem;background:#8b5cf6;right:-8rem;bottom:2%;animation-delay:-4s}
+@keyframes auf{to{transform:translate(2.5rem,-2rem) scale(1.12)}}
+.au-card{position:relative;width:min(24rem,100%);padding:2rem 1.7rem 1.5rem;border-radius:1.4rem;background:linear-gradient(180deg,rgba(22,32,56,.82),rgba(10,16,30,.9));border:1px solid rgba(0,229,255,.28);box-shadow:0 1.5rem 4rem rgba(0,0,0,.6),0 0 3rem rgba(0,229,255,.1);backdrop-filter:blur(14px);text-align:center}
+.au-logo{width:4.2rem;height:4.2rem;margin:-3.4rem auto .9rem;border-radius:1.2rem;display:grid;place-items:center;font-size:1.8rem;color:#fff;background:linear-gradient(135deg,#00e5ff,#8b5cf6);box-shadow:0 .6rem 1.6rem rgba(0,229,255,.4)}
+.au-title{margin:0;font-size:1.6rem;font-weight:900;letter-spacing:.04em;background:linear-gradient(90deg,#00e5ff,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.au-sub{margin:.3rem 0 1.2rem;color:var(--muted);font-size:.82rem}
+.au-pane{display:flex;flex-direction:column;gap:.75rem;text-align:left}
+.au-f{display:flex;align-items:center;gap:.6rem;background:var(--ink);border:1px solid var(--line);border-radius:.8rem;padding:0 .8rem;transition:.2s}
+.au-f:focus-within{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.15)}
+.au-f>i{color:var(--cyan);width:1rem;text-align:center;opacity:.85}
+.au-f input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--text);padding:.85rem 0;font:inherit;font-size:.92rem}
+.au-eye{background:none;border:0;color:var(--muted);cursor:pointer;padding:.3rem}.au-eye:hover{color:var(--cyan)}
+.au-btn{border:0;cursor:pointer;color:#04222a;font-weight:900;font-size:.92rem;letter-spacing:.04em;padding:.9rem;border-radius:.8rem;background:linear-gradient(135deg,#00e5ff,#34d399);box-shadow:0 .5rem 1.2rem rgba(0,229,255,.28);transition:.15s}
+.au-btn:hover{filter:brightness(1.1)}.au-btn:active{transform:scale(.97)}
+.au-btn.danger{background:linear-gradient(135deg,#e11d48,#fb4a6b);color:#fff;box-shadow:none}
+.au-btn.sm{padding:.55rem .9rem;font-size:.8rem}
+.au-link{color:var(--cyan);font-size:.82rem;cursor:pointer;text-align:center;text-decoration:none}.au-link:hover{text-decoration:underline}
+.au-msg{min-height:1.2rem;margin-top:.8rem;font-size:.82rem;font-weight:700;color:var(--rose)}.au-msg.ok{color:var(--green)}
+#acc-modal{position:fixed;inset:0;z-index:100000;display:none;align-items:flex-start;justify-content:center;padding:1rem;background:rgba(2,6,14,.82);backdrop-filter:blur(6px);overflow:auto}
+#acc-modal.on{display:flex}
+.acc-box{width:min(40rem,100%);background:linear-gradient(180deg,#111a2d,var(--panel));border:1px solid rgba(0,229,255,.28);border-radius:1.2rem;padding:1.1rem 1.2rem;box-shadow:0 1.5rem 4rem rgba(0,0,0,.6)}
+.acc-head{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;font-size:1.05rem;color:var(--cyan)}
+.acc-head .sp{flex:1}.acc-head button{background:none;border:0;color:var(--muted);font-size:1.2rem;cursor:pointer}
+.acc-badge{font-size:.7rem;font-weight:800;padding:.15rem .55rem;border-radius:2rem;background:rgba(139,92,246,.25);color:#c4b5fd}.acc-badge.admin{background:rgba(251,191,36,.2);color:var(--amber)}
+.acc-sec{border-top:1px solid var(--line);padding:.8rem 0}.acc-sec h4{margin:0 0 .55rem;font-size:.85rem;color:var(--muted);letter-spacing:.05em}
+.acc-row{display:flex;gap:.5rem;flex-wrap:wrap}.acc-row .au-f{flex:1;min-width:9rem}
+.acc-row select{background:var(--ink);color:var(--text);border:1px solid var(--line);border-radius:.8rem;padding:0 .7rem}
+.acc-user{display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;margin-top:.45rem;border:1px solid var(--line);border-radius:.8rem;background:var(--ink)}
+.acc-user .nm{font-weight:800}.acc-user .em{color:var(--muted);font-size:.78rem;flex:1;overflow:hidden;text-overflow:ellipsis}
+/* ===== EFFECTIVE ===== */
+#eff-overlay{position:fixed;inset:0;z-index:99998;display:none;flex-direction:column;gap:.75rem;padding:.75rem;background:radial-gradient(60rem 30rem at 0% -10%,rgba(0,229,255,.12),transparent 60%),radial-gradient(50rem 30rem at 100% 0%,rgba(139,92,246,.14),transparent 60%),var(--bg)}
+#eff-overlay.open{display:flex}
+#eff-search{background:var(--ink);border:1px solid var(--line);border-radius:.6rem;color:#fff;font-size:.95rem;padding:.45rem .8rem;width:16rem;max-width:40vw;min-height:2.6rem}
+#eff-search:focus{outline:none;border-color:var(--cyan)}
+#eff-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+#eff-scroll table{width:100%;min-width:96rem;border-collapse:separate;border-spacing:0}
+#eff-scroll thead th{--hc:#22d3ee;position:sticky;top:0;z-index:6;padding:1rem .6rem;font-size:.85rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;line-height:1.3;text-align:center;color:#e8f1fb;
+ background:#0b1a33;border-bottom:3px solid var(--hc);border-right:1px solid #22314f}
+#eff-scroll thead th.stick-no{left:0;z-index:9;width:4rem;min-width:4rem}
+#eff-scroll thead th.stick-name{left:4rem;z-index:9;min-width:12rem}
+#eff-scroll td{padding:.5rem .7rem;height:7.6rem;border-bottom:1px solid rgba(120,150,200,.2);border-right:1px solid rgba(120,150,200,.18);text-align:center;vertical-align:middle;font-family:var(--mono);font-weight:800;font-size:1.35rem;background:#1b2740}
+#eff-scroll tbody tr:nth-child(even) td{background:#223052}
+#eff-scroll tbody tr:hover td{background:#2d4170}
+#eff-scroll td.p-no{position:sticky;left:0;z-index:3;width:4rem;min-width:4rem;color:var(--muted);font-size:1.1rem}
+#eff-scroll td.p-name{position:sticky;left:4rem;z-index:3;font-family:'Be Vietnam Pro',system-ui,sans-serif;text-align:left;font-size:1.1rem;font-weight:800;line-height:1.35;color:#fff;min-width:12rem;box-shadow:.3rem 0 .6rem -.3rem rgba(0,0,0,.6)}
+#eff-scroll td.p-purpose{font-family:'Be Vietnam Pro',system-ui,sans-serif;text-align:left;font-size:.95rem;font-weight:600;line-height:1.45;color:#dbe5f3;min-width:15rem;white-space:pre-line}
+#eff-scroll td.p-img{width:14rem}
+#eff-scroll .na{color:#475569}
+
+#eff-overlay .plan-sum b{font-size:2.3rem}
+#eff-scroll table{min-width:62rem}
+#eff-scroll td{height:3.7rem}
+#eff-scroll td.p-name{min-width:16rem}
+#eff-scroll thead th{--hc:#22d3ee}
+.e-b{color:#fbbf24}.e-a{color:#34d399}.e-c{color:#60a5fa}
+@media (max-width:640px){#eff-search{width:100%;max-width:none}#eff-overlay .plan-sum b{font-size:1.5rem}}
+.au-rem{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);cursor:pointer}.au-rem input{accent-color:var(--cyan)}
+
+#eff-body tr{cursor:pointer;user-select:none;-webkit-user-select:none}
+#eff-detail,#plan-detail{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(3,7,16,.85);backdrop-filter:blur(6px)}
+#eff-detail.open,#plan-detail.open{display:flex}
+.ed-card{width:min(62rem,100%);max-height:100%;overflow:auto;display:grid;grid-template-columns:1.15fr 1fr;gap:1.2rem;padding:1.2rem;border:1px solid rgba(0,229,255,.3);border-radius:1.2rem;background:linear-gradient(180deg,#111a2d,var(--panel));box-shadow:0 1.5rem 4rem rgba(0,0,0,.6);cursor:zoom-out}
+.ed-img{background:#fff;border-radius:1rem;display:flex;align-items:center;justify-content:center;min-height:18rem;overflow:hidden;border:2px solid var(--line)}
+.ed-img img{width:100%;height:100%;max-height:68vh;object-fit:contain;display:block}
+.ed-name{font-size:1.6rem;font-weight:900;color:#fff;line-height:1.3;margin:0 0 .8rem}
+.ed-row{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;padding:.65rem .9rem;margin-bottom:.5rem;border-radius:.8rem;background:var(--ink);border:1px solid var(--line);border-left:4px solid var(--c)}
+.ed-row span{color:var(--muted);font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.ed-row b{font-family:var(--mono);font-size:1.5rem;color:var(--c)}
+.ed-hint{margin-top:.7rem;font-size:.78rem;color:var(--muted);text-align:center}
+#plan-body tr{cursor:pointer;user-select:none;-webkit-user-select:none}
+#eff-scroll td.p-img{width:8rem}
+#eff-scroll .p-img-box{width:5.6rem;height:3rem;cursor:default}
+#eff-scroll .p-img-box:hover{transform:none;border-color:var(--line)}
+@media (max-width:700px){.ed-card{grid-template-columns:1fr}.ed-img{min-height:12rem}.ed-name{font-size:1.25rem}}
+
+/* ===== EFFECTIVE v2: before/after ===== */
+#eff-scroll table{min-width:88rem}
+#eff-scroll td{height:5.8rem}
+#eff-scroll td.p-img{width:11rem;padding:.3rem .5rem}
+#eff-scroll .p-img-box{width:10rem;height:5rem;cursor:pointer}
+#eff-scroll thead tr.h1 th{height:2.8rem;padding-top:.35rem;padding-bottom:.35rem}
+#eff-scroll thead tr.h2 th{top:2.8rem;padding-top:.5rem;padding-bottom:.5rem}
+#eff-scroll thead th.hb{background:#2a2410}#eff-scroll thead th.ha{background:#0f2a22}#eff-scroll thead th.hc{background:#0f2036}#eff-scroll thead th.he{background:#2b1b0e}
+#eff-detail .ed-card{display:flex;flex-direction:column;gap:.8rem;width:min(76rem,100%)}
+#eff-detail .ed-top{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+#eff-detail .ed-top .ed-name{margin:0}
+#eff-detail .ed-rate{text-align:right;line-height:1}#eff-detail .ed-rate small{display:block;color:var(--muted);font-weight:800;font-size:.72rem;letter-spacing:.08em;margin-bottom:.2rem}#eff-detail .ed-rate b{font-family:var(--mono);font-size:2.4rem}
+#eff-detail .ed-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+#eff-detail .ed-pane{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:1rem;padding:.7rem;background:var(--ink)}
+#eff-detail .ed-tag{font-weight:900;letter-spacing:.1em;color:var(--c);font-size:.85rem;margin-bottom:.5rem}
+#eff-detail .ed-pane .ed-img{min-height:14rem;max-height:46vh}#eff-detail .ed-pane .ed-img img{max-height:46vh}
+#eff-detail .ed-val{margin-top:.55rem;text-align:center;font-family:var(--mono);font-size:1.5rem;font-weight:800;color:var(--c)}
+#eff-detail .ed-stats{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}#eff-detail .ed-stats .ed-row{margin:0}
+#eff-detail .ed-btns{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:space-between}
+@media (max-width:700px){#eff-detail .ed-pair,#eff-detail .ed-stats{grid-template-columns:1fr}#eff-detail .ed-rate b{font-size:1.8rem}#eff-detail .ed-pane .ed-img{min-height:10rem}}
+
+/* ===== EFFECTIVE v3: bảng gộp + ảnh đồng nhất ===== */
+#eff-detail .ed-card{gap:.9rem}
+#eff-detail .ed-name{margin:0}
+#eff-detail .ed-tbl{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:1rem;overflow:hidden;background:var(--ink)}
+#eff-detail .ed-tbl th{padding:.7rem .9rem;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:#0b1a33;border-bottom:2px solid var(--cyan);text-align:right}
+#eff-detail .ed-tbl th:first-child,#eff-detail .ed-tbl td:first-child{text-align:left}
+#eff-detail .ed-tbl td{padding:.8rem .9rem;text-align:right;font-family:var(--mono);font-size:1.3rem;font-weight:800;border-bottom:1px solid var(--line)}
+#eff-detail .ed-tbl td:first-child{font-family:inherit;font-size:.9rem;letter-spacing:.07em;text-transform:uppercase}
+#eff-detail .ed-tbl .r-b td{color:#fbbf24}#eff-detail .ed-tbl .r-a td{color:#34d399}#eff-detail .ed-tbl .r-c td{color:#60a5fa}
+#eff-detail .ed-tbl tfoot td{padding:.7rem .9rem;border-bottom:0;background:#0b1424}
+#eff-detail .ed-eff{display:flex;align-items:center;gap:.9rem}
+#eff-detail .ed-eff span{font-size:.78rem;font-weight:800;letter-spacing:.08em;color:var(--muted)}
+#eff-detail .ed-eff b{font-family:var(--mono);font-size:1.7rem;min-width:6.5rem;text-align:right}
+#eff-detail .ed-pane .ed-img{aspect-ratio:3/2;min-height:0;max-height:none;background:#0b1424}
+#eff-detail .ed-pane .ed-img img{width:100%;height:100%;max-height:none;object-fit:cover}
+#eff-scroll .p-img-box img{object-fit:cover}
+@media (max-width:700px){#eff-detail .ed-tbl td{font-size:1rem;padding:.6rem .5rem}#eff-detail .ed-tbl th{padding:.6rem .5rem;font-size:.68rem}}
+
+/* ===== EFFECTIVE v4: ảnh hiện trọn vẹn, tự co vừa khung ===== */
+#eff-detail .ed-pane .ed-img{position:relative;overflow:hidden}
+#eff-detail .ed-pane .ed-img img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain}
+#eff-detail .ed-pane .ed-img img.ed-bg{position:absolute;z-index:0;inset:-12%;width:124%;height:124%;object-fit:cover;filter:blur(18px) brightness(.5);pointer-events:none}
+#eff-scroll .p-img-box{background:#0b1424}
+#eff-scroll .p-img-box img{object-fit:contain}
+/* ===== KHÓA THEO THÁNG ===== */
+#lock-overlay{position:fixed;inset:0;z-index:100010;display:flex;align-items:center;justify-content:center;padding:1rem;overflow:auto;background:radial-gradient(60rem 36rem at 10% -10%,rgba(251,74,107,.2),transparent 60%),radial-gradient(50rem 34rem at 100% 100%,rgba(139,92,246,.24),transparent 60%),#050810}
+#lock-overlay.off{display:none}
+#lock-overlay .au-logo{background:linear-gradient(135deg,#fb4a6b,#f59e0b);box-shadow:0 .6rem 1.6rem rgba(251,74,107,.4)}
+#lock-overlay .au-title{background:linear-gradient(90deg,#fb7185,#fbbf24);-webkit-background-clip:text;background-clip:text}
+</style>
+</head>
+<body>
+<div id="lock-overlay">
+  <div class="au-card">
+    <div class="au-logo"><i class="fa-solid fa-lock"></i></div>
+    <h2 class="au-title">ỨNG DỤNG ĐÃ KHÓA</h2>
+    <p class="au-sub" id="lock-sub">Nhập mật khẩu admin để tiếp tục</p>
+    <div class="au-pane">
+      <label class="au-f"><i class="fa-solid fa-key"></i><input id="lock-pw" type="password" inputmode="numeric" autocomplete="off" placeholder="Mật khẩu admin"><button type="button" class="au-eye" onclick="auEye(this)"><i class="fa-regular fa-eye"></i></button></label>
+      <button class="au-btn" onclick="lockTry()">MỞ KHÓA</button>
+    </div>
+    <div id="lock-msg" class="au-msg"></div>
+  </div>
+</div>
+<div id="auth-overlay">
+  <div class="au-orb o1"></div><div class="au-orb o2"></div>
+  <div class="au-card">
+    <div class="au-logo"><i class="fa-solid fa-cube"></i></div>
+    <h2 class="au-title">H&amp;S TECH</h2>
+    <p class="au-sub" id="au-sub">3D PRINTING PLAN</p>
+    <div id="au-login" class="au-pane">
+      <label class="au-f"><i class="fa-solid fa-user"></i><input id="li-user" placeholder="Tên đăng nhập hoặc email" autocomplete="username"></label>
+      <label class="au-f"><i class="fa-solid fa-lock"></i><input id="li-pass" type="password" placeholder="Mật khẩu" autocomplete="current-password"><button type="button" class="au-eye" onclick="auEye(this)"><i class="fa-regular fa-eye"></i></button></label>
+      <label class="au-rem"><input type="checkbox" id="li-rem" checked> Ghi nhớ đăng nhập trên máy này</label>
+      <button class="au-btn" onclick="auLogin()">ĐĂNG NHẬP</button>
+      <a class="au-link" onclick="auShow('forgot')">Quên mật khẩu?</a>
+    </div>
+    <div id="au-setup" class="au-pane" style="display:none">
+      <label class="au-f"><i class="fa-solid fa-user"></i><input id="su-name" placeholder="Tên tài khoản chủ (admin)" value="admin"></label>
+      <label class="au-f"><i class="fa-solid fa-envelope"></i><input id="su-email" placeholder="Email khôi phục" value="atuan.nguyen1909@gmail.com"></label>
+      <label class="au-f"><i class="fa-solid fa-lock"></i><input id="su-p1" type="password" placeholder="Mật khẩu (tối thiểu 6 ký tự)"><button type="button" class="au-eye" onclick="auEye(this)"><i class="fa-regular fa-eye"></i></button></label>
+      <label class="au-f"><i class="fa-solid fa-lock"></i><input id="su-p2" type="password" placeholder="Nhập lại mật khẩu"></label>
+      <button class="au-btn" onclick="auSetup()">TẠO TÀI KHOẢN CHỦ</button>
+    </div>
+    <div id="au-forgot" class="au-pane" style="display:none">
+      <div id="fg-1" class="au-pane">
+        <label class="au-f"><i class="fa-solid fa-user"></i><input id="fg-id" placeholder="Tên đăng nhập hoặc email"></label>
+        <button class="au-btn" onclick="auSendCode()">GỬI MÃ XÁC THỰC</button>
+      </div>
+      <div id="fg-2" class="au-pane" style="display:none">
+        <label class="au-f"><i class="fa-solid fa-key"></i><input id="fg-code" placeholder="Mã 6 số trong email" inputmode="numeric" maxlength="6"></label>
+        <label class="au-f"><i class="fa-solid fa-lock"></i><input id="fg-p1" type="password" placeholder="Mật khẩu mới"><button type="button" class="au-eye" onclick="auEye(this)"><i class="fa-regular fa-eye"></i></button></label>
+        <label class="au-f"><i class="fa-solid fa-lock"></i><input id="fg-p2" type="password" placeholder="Nhập lại mật khẩu mới"></label>
+        <button class="au-btn" onclick="auDoReset()">ĐỔI MẬT KHẨU</button>
+      </div>
+      <a class="au-link" onclick="auShow('login')">← Quay lại đăng nhập</a>
+    </div>
+    <div id="au-msg" class="au-msg"></div>
+  </div>
+</div>
+<div id="acc-modal"><div class="acc-box">
+  <div class="acc-head"><b><i class="fa-solid fa-user-shield"></i> TÀI KHOẢN</b><span id="acc-role" class="acc-badge"></span><span class="sp"></span><button onclick="accClose()">✕</button></div>
+  <div class="acc-sec"><h4>THÔNG TIN</h4><div class="acc-row">
+    <label class="au-f"><i class="fa-solid fa-user"></i><input id="acc-name" placeholder="Tên tài khoản"></label>
+    <label class="au-f"><i class="fa-solid fa-envelope"></i><input id="acc-email" placeholder="Email"></label>
+    <button class="au-btn sm" onclick="accSaveProfile()">LƯU</button></div></div>
+  <div class="acc-sec"><h4>ĐỔI MẬT KHẨU</h4><div class="acc-row">
+    <label class="au-f"><i class="fa-solid fa-lock"></i><input id="acc-old" type="password" placeholder="Mật khẩu hiện tại"></label>
+    <label class="au-f"><i class="fa-solid fa-key"></i><input id="acc-new" type="password" placeholder="Mật khẩu mới"></label>
+    <label class="au-f"><i class="fa-solid fa-key"></i><input id="acc-new2" type="password" placeholder="Nhập lại"></label>
+    <button class="au-btn sm" onclick="accSavePw()">ĐỔI</button></div></div>
+  <div class="acc-sec" id="acc-admin"><h4>QUẢN LÝ NGƯỜI DÙNG (ADMIN)</h4><div class="acc-row">
+    <label class="au-f"><i class="fa-solid fa-user-plus"></i><input id="nu-name" placeholder="Tên đăng nhập"></label>
+    <label class="au-f"><i class="fa-solid fa-lock"></i><input id="nu-pass" type="text" placeholder="Mật khẩu"></label>
+    <label class="au-f"><i class="fa-solid fa-envelope"></i><input id="nu-email" placeholder="Email (để khôi phục MK)"></label>
+    <select id="nu-role"><option value="user">User</option><option value="admin">Admin</option></select>
+    <button class="au-btn sm" onclick="accCreate()">TẠO</button></div><div id="acc-list"></div>
+    <button class="au-btn sm" style="margin-top:.7rem" onclick="accShare()"><i class="fa-solid fa-share-nodes"></i> TẢI BẢN CHIA SẺ (kèm tài khoản)</button></div>
+  <div class="acc-sec" style="display:flex;align-items:center;gap:1rem"><button class="au-btn danger sm" onclick="auLogout()"><i class="fa-solid fa-right-from-bracket"></i> ĐĂNG XUẤT</button>
+    <button class="au-btn sm" onclick="accClose();lockNow()"><i class="fa-solid fa-lock"></i> KHÓA NGAY</button><div id="acc-msg" class="au-msg" style="margin:0"></div></div>
+</div></div>
+<div id="toast-container"></div>
+
+<header class="card topbar">
+  <div class="brand">
+    <div class="logo"><i class="fa-solid fa-cube"></i></div>
+    <div>
+      <h1>H&amp;S TECH - 3D PRINTING PLAN </h1>
+      <p>A TUẤN HUST DEV : 0969.846.222</p>
+    </div>
+  </div>
+  <div class="tools">
+    <div class="clock"><span id="current-time">00:00:00</span><span id="current-date">--/--/----</span></div>
+    <button onclick="openEff()" class="btn" style="background:linear-gradient(135deg,#f59e0b,#fb923c);color:#2b1700"><i class="fa-solid fa-sack-dollar"></i> EFFECTIVE</button>
+    <button onclick="openPlan()" class="btn b-purple"><i class="fa-solid fa-table-list"></i> PLAN</button>
+    <button onclick="addNewProduct()" class="btn b-green"><i class="fa-solid fa-plus"></i> ADD ITEM</button>
+    <button onclick="exportToExcel()" class="btn b-teal"><i class="fa-solid fa-file-excel"></i> EXPORT EXCEL</button>
+    <button onclick="saveToLocalStorage(false)" class="btn b-cyan"><i class="fa-solid fa-floppy-disk"></i> SAVE</button>
+    <button onclick="accOpen()" class="btn b-purple" title="Tài khoản"><i class="fa-solid fa-user-shield"></i><span id="acc-btn-name" hidden></span></button>
+  </div>
+</header>
+
+<section class="kpis">
+  <div class="card kpi" style="--c:var(--cyan)"><div><p>TOTAL ITEM</p><h3 id="kpi-total-items">1</h3><span><i class="fa-solid fa-boxes-stacked"></i> Designed Item</span></div><div class="ico"><i class="fa-solid fa-layer-group"></i></div></div>
+  <div class="card kpi" style="--c:var(--purple)"><div><p>TOTAL NEEDED</p><h3 id="kpi-total-plan">10</h3><span><i class="fa-solid fa-bullseye"></i> TARGET</span></div><div class="ico"><i class="fa-solid fa-list-check"></i></div></div>
+  <div class="card kpi" style="--c:var(--green);--v:var(--green)"><div><p>COMPLETE</p><h3 id="kpi-total-actual">1</h3><span><i class="fa-solid fa-circle-check"></i> Printed pieces</span></div><div class="ico"><i class="fa-solid fa-print"></i></div></div>
+  <div class="card kpi" style="--c:var(--amber);--v:var(--amber)"><div><p>COMPLETE RATE</p><h3 id="kpi-avg-rate">10%</h3><span><i class="fa-solid fa-chart-line"></i> COMPLETE / NEEDED</span></div><div class="ico"><i class="fa-solid fa-percent"></i></div></div>
+</section>
+
+<main id="main-layout">
+  <!-- TRÁI: SẢN PHẨM ĐANG IN -->
+  <section class="card hero">
+    <div class="card-head">
+      <div class="live"><span class="dot"></span><h2>PRINTING IN PROGRESS</h2></div>
+      <span id="active-prod-badge" class="badge s-run"><i class="fa-solid fa-print"></i> In progress</span>
+    </div>
+    <div class="img-frame">
+      <img id="active-prod-img" src="" alt="Sản phẩm" onerror="this.onerror=null;this.src=PLACEHOLDER_IMG">
+      <button id="active-prod-change-btn" class="img-change"><i class="fa-solid fa-camera"></i> Change image</button>
+    </div>
+    <div class="name-row">
+      <h3 id="active-prod-name">GIÁ ĐỂ NOTE SCAN</h3>
+      <div class="rate-box"><small>Progress (%)</small><span id="active-prod-rate">10%</span></div>
+    </div>
+    <div class="bar"><div id="active-prod-bar" style="width:10%"></div></div>
+    <div class="stat3">
+      <div class="tile"><small>Total Needed</small><b id="active-prod-total">10</b></div>
+      <div class="tile"><small>Daily Capacity</small><b id="active-prod-daily" style="color:var(--cyan)">3</b></div>
+      <div class="tile"><small>Complete</small><b id="active-prod-actual" style="color:var(--green)">1</b></div>
+    </div>
+  </section>
+
+  <!-- PHẢI -->
+  <div class="right">
+    <div class="row-top">
+      <div class="card donut-card">
+        <div class="card-head"><h2><i class="fa-solid fa-chart-pie" style="color:var(--purple)"></i> Complete Status</h2></div>
+        <p id="donut-prod-title">GIÁ ĐỂ NOTE SCAN</p>
+        <div class="donut-body">
+          <div class="donut-area">
+            <div class="cv"><canvas id="donutChart"></canvas></div>
+            <div class="donut-center"><span id="donut-center-rate">10%</span><small>Complete</small></div>
+          </div>
+          <div class="stat-col">
+            <div class="tile sm"><small style="color:var(--green)">Complete</small><b id="donut-stat-actual">1</b></div>
+            <div class="tile sm"><small style="color:var(--rose)">Remaining</small><b id="donut-stat-remain">9</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="camera-box-container" class="card">
+        <div class="card-head">
+          <h2 style="color:var(--cyan)"><i class="fa-solid fa-video"></i> IP CAMERA</h2>
+          <div class="cam-btns">
+            <button onclick="toggleCamFlip()" class="chip" title="Lật ngược Camera"><i class="fa-solid fa-arrows-rotate"></i> FLIP</button>
+            <button onclick="camSnap()" class="chip" title="Chụp ảnh (tải về máy)"><i class="fa-solid fa-camera"></i></button>
+            <button id="cam-rec-btn" onclick="camRecToggle()" class="chip" title="Quay video (bấm lần nữa để dừng và tải về)"><i id="cam-rec-icon" class="fa-solid fa-circle" style="color:#fb4a6b"></i><span id="cam-rec-time"></span></button>
+            <button id="cam-toggle-btn" onclick="toggleCamera()" class="chip go"><i class="fa-solid fa-play"></i> <span id="cam-btn-text">OPEN CAM</span></button>
+            <button onclick="toggleCamFullscreen()" class="chip" title="Phóng to / Thu nhỏ"><i id="cam-fullscreen-icon" class="fa-solid fa-expand"></i></button>
+          </div>
+        </div>
+        <div class="cam-cfg">
+          <select id="cam-type-select" onchange="updateCamTypeUi()"><option value="mjpeg">IP / MJPEG</option><option value="webcam">Webcam Local</option><option value="embed">RTSP / Embed</option></select>
+          <select id="cam-device-select" class="hidden" onchange="onCamDeviceChange()" title="Chọn camera (USB / laptop)" style="flex:1"></select>
+          <input type="text" id="cam-url-input" value="http://localhost:1984/api/stream.mjpeg?src=cam1" placeholder="Nhập URL Camera...">
+          <button onclick="saveCamUrl()" class="chip" title="Lưu địa chỉ Camera"><i class="fa-solid fa-floppy-disk"></i></button>
+        </div>
+        <details class="hik-box">
+          <summary><i class="fa-solid fa-wand-magic-sparkles"></i> Seting IP camera... </summary>
+          <div class="row"><input id="hik-ip" value="192.168.1.111" placeholder="IP camera (vd 192.168.1.20)"><input id="hik-pass" type="password" placeholder="PW camera"></div>
+          <div class="row"><input id="hik-host" value="localhost" placeholder="IP máy chạy go2rtc"><input id="hik-ch" value="102" style="max-width:4.5rem" title="KÊNH: 101 = nét, 102 = nhẹ (không phải cổng 554)"></div>
+          <button onclick="applyHikvision()" class="chip go" style="width:100%"><i class="fa-solid fa-bolt"></i> DONE</button>
+          <p class="note">1) process running .</p>
+          <textarea id="hik-yaml" readonly placeholder="go2rtc.yaml show"></textarea>
+          <button onclick="copyHikYaml()" class="chip" style="width:100%"><i class="fa-solid fa-copy"></i> COPY go2rtc.yaml</button>
+        </details>
+        <div id="cam-view-wrapper" class="cam-frame">
+          <span id="cam-badge">● OFF</span>
+          <div id="cam-off-screen"><i class="fa-solid fa-video-slash"></i><span>Camera OFF</span></div>
+          <img id="cam-stream-img" src="" class="hidden" alt="">
+          <video id="cam-stream-video" autoplay playsinline muted class="hidden"></video>
+          <iframe id="cam-stream-iframe" class="hidden"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div id="product-panel" class="card table-card">
+      <div class="card-head">
+
+        
+        <h2><i class="fa-solid fa-table-list" style="color:var(--green)"></i> Product List &amp; Printing Status</h2>
+        <input type="text" id="search-input" onkeyup="renderDashboard()" placeholder="Search product name...">
+      </div>
+      <input type="file" id="global-file-input" accept="image/*" class="hidden" onchange="handleImageFileUploaded(event)">
+      <div id="product-scroll">
+        <table>
+          <thead><tr>
+            <th style="width:4.4rem">Show</th><th style="width:2rem">No</th><th class="l" style="min-width:8rem">Name</th><th style="width:3.2rem">Image</th>
+            <th style="width:4rem">Total Needed</th><th style="width:4rem">Daily Capacity</th><th style="width:4rem">Complete</th><th style="width:3.6rem">Pending</th>
+            <th style="width:5.4rem">Rate (%)</th><th style="width:7rem">Status</th><th style="width:2.8rem">Delete</th>
+          </tr></thead>
+          <tbody id="product-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+    <!-- LOGIC XỬ LÝ DỮ LIỆU & IP CAMERA -->
+    <script>
+        const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="#0a111f"/><text x="50%" y="50%" fill="#64748b" font-family="sans-serif" font-size="22" font-weight="700" text-anchor="middle">NO IMAGE</text></svg>');
+        const DEFAULT_PRODUCTS = [
+            {
+                id: 1,
+                name: "GIÁ ĐỂ NOTE SCAN",
+                image: "https://cdn.tgdd.vn/Files/2019/11/14/1218860/chup-anh-3d-la-gi-cach-chup-anh-3d-bang-dien-thoai-may-anh-don-gian-5.jpg",
+                totalPlan: 10,
+                dailyTarget: 3,
+                actual: 1
+            },
+            {
+                id: 2,
+                name: "Hộp để tape",
+                image: "https://cdn.tgdd.vn/Files/2019/11/14/1218860/chup-anh-3d-la-gi-cach-chup-anh-3d-bang-dien-thoai-may-anh-don-gian-5.jpg",
+                totalPlan: 1200,
+                dailyTarget: 150,
+                actual: 950
+            },
+            {
+                id: 3,
+                name: "Cover IP camera",
+                image: "https://cdn.tgdd.vn/Files/2019/11/14/1218860/chup-anh-3d-la-gi-cach-chup-anh-3d-bang-dien-thoai-may-anh-don-gian-5.jpg",
+                totalPlan: 300,
+                dailyTarget: 40,
+                actual: 300
+            }
+        ];
+        let products = [];
+        let selectedProductId = 1;
+        let activeUploadProductId = null;
+        let donutChartInstance = null;
+
+        // BIẾN QUẢN LÝ CAMERA
+        let isCamActive = false;
+        let isCamFlipped = false;
+        let localMediaStream = null;
+
+        window.onload = async function() {
+            await loadFromLocalStorage();
+            try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+            loadCamConfig();
+            if (!products.some(p => p.id === selectedProductId)) selectedProductId = products[0]?.id ?? null;
+            updateClock();
+            setInterval(updateClock, 1000);
+            setupDonutChart();
+            renderDashboard();
+        };
+
+        function showToast(message, icon = "fa-check-circle") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 50);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('vi-VN');
+            document.getElementById('current-date').innerText = now.toLocaleDateString('vi-VN', {
+                weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit'
+            });
+        }
+
+        function getPending(p) {
+            return Math.max(0, (Number(p.totalPlan) || 0) - (Number(p.actual) || 0));
+        }
+
+        // Status is derived automatically from progress (no manual selection)
+        function getStatus(p) {
+            const need = Number(p.totalPlan) || 0, done = Number(p.actual) || 0;
+            if (need > 0 && done >= need) return { cls: 's-done', icon: 'fa-circle-check', label: 'Completed' };
+            if (done > 0) return { cls: 's-run', icon: 'fa-print', label: 'In progress' };
+            return { cls: 's-new', icon: 'fa-hourglass-start', label: 'Not started' };
+        }
+
+        function calculateCompletionRate(actual, total) {
+            if (!total || total <= 0) return 0;
+            const rate = Math.round((actual / total) * 100);
+            return rate > 100 ? 100 : rate;
+        }
+
+        function renderDashboard() {
+            const tableBody = document.getElementById('product-table-body');
+            const scrollBox = document.getElementById('product-scroll');
+            const savedScrollTop = scrollBox ? scrollBox.scrollTop : 0;
+            const savedScrollLeft = scrollBox ? scrollBox.scrollLeft : 0;
+            const searchQuery = (document.getElementById('search-input').value || '').toLowerCase();
+            tableBody.innerHTML = '';
+            let totalPlanSum = 0;
+            let totalActualSum = 0;
+            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchQuery));
+            
+            products.forEach(p => {
+                totalPlanSum += Number(p.totalPlan || 0);
+                totalActualSum += Number(p.actual || 0);
+            });
+
+            filteredProducts.forEach((prod) => {
+                const rate = calculateCompletionRate(prod.actual, prod.totalPlan);
+                const isFirstRow = (products[0] && prod.id === products[0].id);
+
+                const row = document.createElement('tr');
+                row.className = "product-row" + (prod.id === selectedProductId ? " product-row-selected" : "");
+                row.addEventListener('click', function(event) {
+                    if (event.target.closest('input, select, button, a, label')) return;
+                    selectProduct(prod.id, true);
+                });
+                const st = getStatus(prod);
+                const pend = getPending(prod);
+                const no = products.indexOf(prod) + 1;
+                const barColor = rate < 50 ? '#22d3ee' : rate < 90 ? '#fbbf24' : '#34d399';
+                row.innerHTML = `
+                    <td><div class="show-cell">
+                        <input class="product-select" type="checkbox" aria-label="Show ${escapeHtml(prod.name)}" ${prod.id === selectedProductId ? 'checked' : ''} onchange="selectProduct(${prod.id}, this.checked)">
+                        <div class="mv">
+                            <button class="mv-btn" onclick="moveProductById(${prod.id}, -1)" title="Move up (priority)"><i class="fa-solid fa-chevron-up"></i></button>
+                            <button class="mv-btn" onclick="moveProductById(${prod.id}, 1)" title="Move down"><i class="fa-solid fa-chevron-down"></i></button>
+                        </div></div></td>
+                    <td class="no-cell">${no}</td>
+                    <td class="l"><input type="text" value="${escapeHtml(prod.name)}" onchange="updateProductField(${prod.id}, 'name', this.value)" class="table-input">
+                        ${isFirstRow ? '<span class="tag">⚡ SP SỐ 1</span>' : ''}</td>
+                    <td><div class="thumb"><img src="${escapeHtml(prod.image)}" alt="" onerror="this.onerror=null;this.src=PLACEHOLDER_IMG"><button onclick="triggerFileInputForProduct(${prod.id})">Change</button></div></td>
+                    <td><input type="number" min="0" value="${prod.totalPlan}" onchange="updateProductField(${prod.id}, 'totalPlan', Number(this.value))" class="table-input"></td>
+                    <td><input type="number" min="0" value="${prod.dailyTarget}" onchange="updateProductField(${prod.id}, 'dailyTarget', Number(this.value))" class="table-input" style="color:#22d3ee"></td>
+                    <td><input type="number" min="0" value="${prod.actual}" onchange="updateProductField(${prod.id}, 'actual', Number(this.value))" class="table-input" style="color:#34d399"></td>
+                    <td><span class="pend-val ${pend === 0 ? 'zero' : ''}">${pend.toLocaleString()}</span></td>
+                    <td class="rate-cell"><div class="t"><b>${rate}%</b><span>${prod.actual}/${prod.totalPlan}</span></div><div class="b"><div style="width:${rate}%;background:${barColor}"></div></div></td>
+                    <td><span class="st ${st.cls}"><i class="fa-solid ${st.icon}"></i> ${st.label}</span></td>
+                    <td><button class="del" onclick="deleteProduct(${prod.id})" title="Delete"><i class="fa-solid fa-trash-can"></i></button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('kpi-total-items').innerText = products.length;
+            document.getElementById('kpi-total-plan').innerText = totalPlanSum.toLocaleString();
+            document.getElementById('kpi-total-actual').innerText = totalActualSum.toLocaleString();
+            const avgRate = totalPlanSum > 0 ? Math.min(Math.round((totalActualSum / totalPlanSum) * 100), 100) : 0;
+            document.getElementById('kpi-avg-rate').innerText = avgRate + '%';
+            
+            updateActiveProductCard();
+            updateDonutChart();
+            
+            if (scrollBox) {
+                scrollBox.scrollTop = savedScrollTop;
+                scrollBox.scrollLeft = savedScrollLeft;
+            }
+        }
+
+        function selectProduct(id, checked) {
+            if (checked) selectedProductId = id;
+            renderDashboard();
+            saveToLocalStorage(true);
+        }
+
+        function updateActiveProductCard() {
+            let activeProd = products.find(p => p.id === selectedProductId) || (products.length > 0 ? products[0] : null);
+            if (activeProd) {
+                const rate = calculateCompletionRate(activeProd.actual, activeProd.totalPlan);
+                document.getElementById('active-prod-name').innerText = activeProd.name;
+                document.getElementById('active-prod-img').src = activeProd.image || PLACEHOLDER_IMG;
+                document.getElementById('active-prod-rate').innerText = `${rate}%`;
+                document.getElementById('active-prod-bar').style.width = `${rate}%`;
+                document.getElementById('active-prod-total').innerText = activeProd.totalPlan.toLocaleString();
+                document.getElementById('active-prod-daily').innerText = activeProd.dailyTarget.toLocaleString();
+                document.getElementById('active-prod-actual').innerText = activeProd.actual.toLocaleString();
+
+                const st = getStatus(activeProd);
+                const badge = document.getElementById('active-prod-badge');
+                badge.className = 'badge ' + st.cls;
+                badge.innerHTML = '<i class="fa-solid ' + st.icon + '"></i> ' + st.label;
+                document.getElementById('active-prod-change-btn').onclick = function() {
+                    triggerFileInputForProduct(activeProd.id);
+                };
+            } else {
+                document.getElementById('active-prod-name').innerText = 'Chưa có sản phẩm';
+                document.getElementById('active-prod-img').src = PLACEHOLDER_IMG;
+                document.getElementById('active-prod-rate').innerText = '0%';
+                document.getElementById('active-prod-bar').style.width = '0%';
+            }
+        }
+
+        /* KHỞI TẠO BIỂU ĐỒ 3D NỔI BẬT NGHỆ THUẬT */
+        function setupDonutChart() {
+            const ctx = document.getElementById('donutChart').getContext('2d');
+            
+            const grad = (c1, c2) => (c) => {
+                const area = c.chart.chartArea;
+                if (!area) return c1;
+                const g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+                g.addColorStop(0, c1); g.addColorStop(1, c2);
+                return g;
+            };
+            const gradActual = grad('#00E5FF', '#10B981');
+            const gradRemain = grad('#FB4A6B', '#8B5CF6');
+
+            const shadow3DPlugin = {
+                id: 'shadow3D',
+                beforeDatasetsDraw(chart) {
+                    const { ctx } = chart;
+                    ctx.save();
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowOffsetX = 3;
+                    ctx.shadowOffsetY = 6;
+                },
+                afterDatasetsDraw(chart) {
+                    chart.ctx.restore();
+                }
+            };
+
+            donutChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                plugins: [shadow3DPlugin],
+                data: {
+                    labels: ['Complete', 'Remaining'],
+                    datasets: [{
+                        data: [1, 9],
+                        backgroundColor: (c) => c.dataIndex === 0 ? gradActual(c) : gradRemain(c),
+                        borderWidth: 3,
+                        borderColor: '#131B2A',
+                        borderRadius: 6,
+                        hoverBorderWidth: 4,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '74%',
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0A0E17',
+                            borderColor: '#00F0FF',
+                            borderWidth: 1,
+                            titleFont: { weight: 'bold' }
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        }
+
+        function updateDonutChart() {
+            if (!donutChartInstance) return;
+
+            let activeProd = products.find(p => p.id === selectedProductId) || (products.length > 0 ? products[0] : null);
+            if (activeProd) {
+                const actual = Number(activeProd.actual || 0);
+                const total = Number(activeProd.totalPlan || 0);
+                const remaining = Math.max(0, total - actual);
+
+                document.getElementById('donut-prod-title').innerText = activeProd.name;
+                document.getElementById('donut-stat-actual').innerHTML = `${actual.toLocaleString()}<span class="u">pcs</span>`;
+                document.getElementById('donut-stat-remain').innerHTML = `${remaining.toLocaleString()}<span class="u">pcs</span>`;
+                const rate = calculateCompletionRate(actual, total);
+                const centerRate = document.getElementById('donut-center-rate');
+                if (centerRate) centerRate.innerText = rate + '%';
+
+                donutChartInstance.data.datasets[0].data = [Math.min(actual, total), remaining];
+                donutChartInstance.update();
+            }
+        }
+
+        function moveProductById(id, direction) {
+            const index = products.findIndex(p => p.id === id);
+            if (index < 0) return;
+            moveProduct(index, direction);
+        }
+
+        function moveProduct(index, direction) {
+            const targetIndex = index + direction;
+            if (targetIndex >= 0 && targetIndex < products.length) {
+                const temp = products[index];
+                products[index] = products[targetIndex];
+                products[targetIndex] = temp;
+                renderDashboard();
+                saveToLocalStorage(true);
+            }
+        }
+
+        function updateProductField(id, field, value) {
+            const prod = products.find(p => p.id === id);
+            if (prod) {
+                prod[field] = value;
+                renderDashboard();
+                saveToLocalStorage(true);
+            }
+        }
+
+        function addNewProduct() {
+            const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            products.push({
+                id: newId,
+                name: `Sản Phẩm Mới #${newId}`,
+                image: 'https://cdn.tgdd.vn/Files/2019/11/14/1218860/chup-anh-3d-la-gi-cach-chup-anh-3d-bang-dien-thoai-may-anh-don-gian-5.jpg',
+                totalPlan: 100,
+                dailyTarget: 20,
+                actual: 0
+            });
+            selectedProductId = newId;
+            renderDashboard();
+            saveToLocalStorage(true);
+            showToast("New product added successfully!");
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            if (selectedProductId === id) selectedProductId = products[0]?.id ?? null;
+            renderDashboard();
+            saveToLocalStorage(true);
+            showToast("Product removed from the list.");
+        }
+
+        function triggerFileInputForProduct(productId) {
+            activeUploadProductId = productId;
+            document.getElementById('global-file-input').click();
+        }
+
+        function handleImageFileUploaded(event) {
+            const file = event.target.files[0];
+            if (!file || !activeUploadProductId) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxDim = 1600;
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                    const prod = products.find(p => p.id === activeUploadProductId);
+                    if (prod) {
+                        prod.image = compressedDataUrl;
+                        renderDashboard();
+                        saveToLocalStorage(true);
+                        showToast("Image uploaded and updated successfully!");
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        function exportToExcel() {
+            const headers = ['No','NAME','PURPOSE','TOTAL NEEDED','DAILY CAPACITY','COMPLETE','PENDING','RATE (%)','MATERIAL / ITEM (g)','WORKING TIME / EA (minute) )','STATUS'];
+            const rows = products.map((p,i) => [i+1,p.name,p.purpose||'',Number(p.totalPlan)||0,Number(p.dailyTarget)||0,Number(p.actual)||0,getPending(p),calculateCompletionRate(p.actual,p.totalPlan),p.material ?? '',p.workTime ?? '',getStatus(p).label]);
+            const csv = [headers, ...rows].map(row => row.map(v => '"' + String(v ?? '').replace(/"/g,'""') + '"').join(',')).join('\r\n');
+            const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob); const a = document.createElement('a');
+            a.href = url; a.download = 'HSTech_Printing3D_' + new Date().toISOString().slice(0,10) + '.csv';
+            document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast('Data exported - open it with Excel');
+        }
+
+        /* ---------- LƯU DỮ LIỆU: IndexedDB (dung lượng lớn), dự phòng localStorage ---------- */
+        const IDB_NAME = '3d_printing_db', IDB_STORE = 'kv', IDB_KEY = 'products_v15', LS_DATA_KEY = '3d_printing_data_v15';
+
+        function idbOpen() {
+            return new Promise((res, rej) => {
+                if (!window.indexedDB) return rej(new Error('IndexedDB không khả dụng'));
+                const r = indexedDB.open(IDB_NAME, 1);
+                r.onupgradeneeded = () => r.result.createObjectStore(IDB_STORE);
+                r.onsuccess = () => res(r.result);
+                r.onerror = () => rej(r.error);
+            });
+        }
+        async function idbGet(key) {
+            const db = await idbOpen();
+            return new Promise((res, rej) => {
+                const q = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(key);
+                q.onsuccess = () => { db.close(); res(q.result); };
+                q.onerror = () => { db.close(); rej(q.error); };
+            });
+        }
+        async function idbSet(key, val) {
+            const db = await idbOpen();
+            return new Promise((res, rej) => {
+                const t = db.transaction(IDB_STORE, 'readwrite');
+                t.objectStore(IDB_STORE).put(val, key);
+                t.oncomplete = () => { db.close(); res(); };
+                t.onerror = t.onabort = () => { db.close(); rej(t.error || new Error('IDB write failed')); };
+            });
+        }
+
+        let _saving = false, _dirty = false, _toastSave = false;
+        function saveToLocalStorage(silent = false) {
+            try { localStorage.setItem('3d_printing_selected_id', String(selectedProductId ?? '')); } catch (e) {}
+            if (!silent) _toastSave = true;
+            if (_saving) { _dirty = true; return; }
+            _saving = true;
+            idbSet(IDB_KEY, products)
+                .then(() => {
+                    try { localStorage.removeItem(LS_DATA_KEY); } catch (e) {}
+                    if (_toastSave) showToast("Data saved successfully!");
+                })
+                .catch(err => {
+                    console.error("IndexedDB error:", err);
+                    try {
+                        localStorage.setItem(LS_DATA_KEY, JSON.stringify(products));
+                        if (_toastSave) showToast("Data saved successfully!");
+                    } catch (e) {
+                        showToast("Bộ nhớ trình duyệt đầy, chưa lưu được! Hãy dùng ảnh nhỏ hơn.", "fa-exclamation-triangle");
+                    }
+                })
+                .finally(() => {
+                    _saving = false; _toastSave = false;
+                    if (_dirty) { _dirty = false; saveToLocalStorage(true); }
+                });
+        }
+
+        async function loadFromLocalStorage() {
+            let data, migrated = false;
+            try { data = await idbGet(IDB_KEY); } catch (e) { data = undefined; }
+            if (data === undefined) {
+                // Chưa có trong IndexedDB -> lấy dữ liệu cũ từ localStorage (tự chuyển sang IndexedDB ở lần lưu sau)
+                const saved = localStorage.getItem(LS_DATA_KEY);
+                if (saved) { try { data = JSON.parse(saved); migrated = true; } catch (e) { data = undefined; } }
+            }
+            products = Array.isArray(data) ? data : [...DEFAULT_PRODUCTS];
+            const storedId = Number(localStorage.getItem('3d_printing_selected_id'));
+            selectedProductId = products.some(p => p.id === storedId) ? storedId : (products[0]?.id ?? null);
+            if (migrated) saveToLocalStorage(true);
+        }
+
+        function escapeHtml(text) {
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        /* -------------------------------------------------------------
+           CÁC HÀM XỬ LÝ KHUNG CAMERA IP (BẬT/TẮT, PHÓNG TO, LẬT NGƯỢC, LƯU URL)
+        ------------------------------------------------------------- */
+        function loadCamConfig() {
+            const savedUrl = localStorage.getItem('3d_printing_cam_url');
+            const savedType = localStorage.getItem('3d_printing_cam_type');
+            if (savedUrl) document.getElementById('cam-url-input').value = savedUrl;
+            if (savedType) document.getElementById('cam-type-select').value = savedType;
+            updateCamTypeUi();
+        }
+
+        function saveCamUrl() {
+            const url = document.getElementById('cam-url-input').value.trim();
+            const type = document.getElementById('cam-type-select').value;
+            localStorage.setItem('3d_printing_cam_url', url);
+            localStorage.setItem('3d_printing_cam_type', type);
+            showToast("Đã lưu cấu hình Camera!");
+            if (isCamActive) {
+                stopCameraStream();
+                startCameraStream();
+            }
+        }
+
+        function setCamUi(on) {
+            document.getElementById('cam-btn-text').innerText = on ? "CAM OFF" : "OPEN CAM";
+            document.getElementById('cam-toggle-btn').classList.toggle('is-on', on);
+            const badge = document.getElementById('cam-badge');
+            badge.innerText = on ? "● LIVE" : "● OFF";
+            badge.classList.toggle('on', on);
+        }
+        document.addEventListener('keydown', e => {
+            const box = document.getElementById('camera-box-container');
+            if (e.key === 'Escape' && box.classList.contains('cam-fullscreen')) toggleCamFullscreen();
+        });
+
+        function toggleCamera() {
+            if (isCamActive) {
+                stopCameraStream();
+            } else {
+                startCameraStream();
+            }
+        }
+
+        function toggleCamFlip() {
+            const wrapper = document.getElementById('cam-view-wrapper');
+            isCamFlipped = !isCamFlipped;
+            if (isCamFlipped) {
+                wrapper.classList.add('cam-flipped');
+                showToast("Đã lật ngược Camera!");
+            } else {
+                wrapper.classList.remove('cam-flipped');
+                showToast("Đã khôi phục hướng Camera!");
+            }
+        }
+
+        function startCameraStream() {
+            const url = document.getElementById('cam-url-input').value.trim();
+            const type = document.getElementById('cam-type-select').value;
+
+            const offScreen = document.getElementById('cam-off-screen');
+            const imgCam = document.getElementById('cam-stream-img');
+            const videoCam = document.getElementById('cam-stream-video');
+            const iframeCam = document.getElementById('cam-stream-iframe');
+
+            offScreen.classList.add('hidden');
+            imgCam.classList.add('hidden');
+            videoCam.classList.add('hidden');
+            iframeCam.classList.add('hidden');
+
+            if (type === 'mjpeg') {
+                imgCam.src = url;
+                imgCam.classList.remove('hidden');
+            } else if (type === 'webcam') {
+                videoCam.classList.remove('hidden');
+                openLocalWebcam();
+            } else if (type === 'embed') {
+                iframeCam.src = url;
+                iframeCam.classList.remove('hidden');
+            }
+
+            isCamActive = true;
+            setCamUi(true);
+            showToast("Đã kết nối Camera!");
+        }
+
+        /* ---------- WEBCAM LOCAL: CHỌN CAMERA USB / LAPTOP ---------- */
+        const CAM_DEV_KEY = '3d_printing_cam_device';
+        const INTERNAL_CAM_RE = /integrated|built-?in|internal|facetime|laptop|front|rear|ir camera|infrared/i;
+
+        function updateCamTypeUi() {
+            const isWebcam = document.getElementById('cam-type-select').value === 'webcam';
+            document.getElementById('cam-device-select').classList.toggle('hidden', !isWebcam);
+            document.getElementById('cam-url-input').classList.toggle('hidden', isWebcam);
+            if (isWebcam) refreshCamDevices();
+        }
+
+        async function refreshCamDevices() {
+            const sel = document.getElementById('cam-device-select');
+            if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return [];
+            const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput');
+            const saved = localStorage.getItem(CAM_DEV_KEY);
+            sel.innerHTML = '';
+            devs.forEach((d, i) => {
+                const o = document.createElement('option');
+                o.value = d.deviceId;
+                o.textContent = d.label || ('Camera ' + (i + 1));
+                sel.appendChild(o);
+            });
+            if (!devs.length || !devs[0].deviceId) {
+                sel.innerHTML = '<option value="">Bấm BẬT CAM → machine </option>';
+            }
+            if (saved && devs.some(d => d.deviceId === saved)) sel.value = saved;
+            return devs;
+        }
+
+        function onCamDeviceChange() {
+            localStorage.setItem(CAM_DEV_KEY, document.getElementById('cam-device-select').value);
+            if (isCamActive) { stopCameraStream(true); startCameraStream(); }
+        }
+
+        async function openLocalWebcam() {
+            const videoCam = document.getElementById('cam-stream-video');
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showToast("Trình duyệt không hỗ trợ Webcam!", "fa-exclamation-triangle");
+                stopCameraStream(); return;
+            }
+            const open = async (id) => navigator.mediaDevices.getUserMedia({
+                video: id ? { deviceId: { exact: id } } : true
+            });
+            try {
+                let saved = localStorage.getItem(CAM_DEV_KEY);
+                let stream;
+                try { stream = await open(saved); }
+                catch (e) { stream = await open(null); saved = null; }
+
+                // Lần đầu (chưa chọn): tự ưu tiên camera ngoài, bỏ camera laptop
+                // (chỉ trên máy tính; điện thoại giữ camera mặc định để tránh lỗi)
+                const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+                                 (window.matchMedia && matchMedia('(pointer:coarse)').matches);
+                let devs = await refreshCamDevices();
+                if (!isMobile && !saved && devs.length > 1) {
+                    const ext = devs.find(d => d.label && !INTERNAL_CAM_RE.test(d.label));
+                    const cur = stream.getVideoTracks()[0].getSettings().deviceId;
+                    if (ext && ext.deviceId !== cur) {
+                        stream.getTracks().forEach(t => t.stop());
+                        try {
+                            stream = await open(ext.deviceId);
+                            document.getElementById('cam-device-select').value = ext.deviceId;
+                            localStorage.setItem(CAM_DEV_KEY, ext.deviceId);
+                        } catch (e) {
+                            stream = await open(null);
+                        }
+                    }
+                }
+                if (!isCamActive) { stream.getTracks().forEach(t => t.stop()); return; }
+                localMediaStream = stream;
+                videoCam.srcObject = stream;
+            } catch (err) {
+                showToast("Không thể mở Webcam máy tính!", "fa-exclamation-triangle");
+                stopCameraStream();
+            }
+        }
+
+        /* ---------- CHỤP ẢNH & QUAY VIDEO ---------- */
+        let camRec = null, camRecChunks = [], camRecTimer = null, camRecRaf = 0, camRecStarting = false;
+        const camEl = i => document.getElementById(i);
+        const camStamp = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds()); };
+        function camDownload(blob, name) {
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+            document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        }
+        function camSource() {
+            const v = camEl('cam-stream-video'), i = camEl('cam-stream-img');
+            if (!v.classList.contains('hidden') && v.videoWidth) return { el: v, w: v.videoWidth, h: v.videoHeight, live: true };
+            if (!i.classList.contains('hidden') && i.naturalWidth) return { el: i, w: i.naturalWidth, h: i.naturalHeight, live: false };
+            return null;
+        }
+        function camGuard() {
+            if (!isCamActive) { showToast("Hãy bật camera trước!", "fa-exclamation-triangle"); return null; }
+            if (!camEl('cam-stream-iframe').classList.contains('hidden')) { showToast("Chế độ RTSP / Embed không hỗ trợ chụp hoặc quay. Dùng IP / MJPEG hoặc Webcam Local.", "fa-exclamation-triangle"); return null; }
+            const s = camSource(); if (!s) showToast("Chưa có hình từ camera để chụp.", "fa-exclamation-triangle");
+            return s;
+        }
+        const CAM_CORS_MSG = "Camera IP chặn chụp/quay (CORS). Trong go2rtc thêm cấu hình api: origin: \"*\" rồi chạy lại.";
+        function camSnap() {
+            const s = camGuard(); if (!s) return;
+            const c = document.createElement('canvas'); c.width = s.w; c.height = s.h;
+            c.getContext('2d').drawImage(s.el, 0, 0, s.w, s.h);
+            try {
+                c.toBlob(b => {
+                    if (!b) return showToast("Không chụp được ảnh.", "fa-exclamation-triangle");
+                    camDownload(b, 'cam_' + camStamp() + '.jpg'); showToast("Đã chụp ảnh và tải về máy!", "fa-camera");
+                }, 'image/jpeg', 0.95);
+                const f = document.createElement('div'); f.className = 'cam-flash'; camEl('cam-view-wrapper').appendChild(f);
+                requestAnimationFrame(() => { f.style.opacity = 0; setTimeout(() => f.remove(), 400); });
+            } catch (e) { showToast(CAM_CORS_MSG, "fa-exclamation-triangle"); }
+        }
+        function camRecToggle() { camRec ? camRecStop() : camRecBegin(); }
+        async function camRecBegin() {
+            if (typeof MediaRecorder === 'undefined') return showToast("Trình duyệt không hỗ trợ quay video.", "fa-exclamation-triangle");
+            const s = camGuard(); if (!s) return;
+            if (camRecStarting || camRec) return; camRecStarting = true;
+            let mic = null;
+            try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+            catch (e) { showToast("Không bật được micro (hãy cho phép quyền micro) - video sẽ không có tiếng.", "fa-microphone-slash"); }
+            camRecStarting = false;
+            let stream, canvas = null;
+            if (s.live && localMediaStream) stream = localMediaStream;
+            else {
+                canvas = document.createElement('canvas'); canvas.width = s.w; canvas.height = s.h;
+                const g = canvas.getContext('2d'); g.drawImage(s.el, 0, 0, s.w, s.h);
+                try { g.getImageData(0, 0, 1, 1); } catch (e) { return showToast(CAM_CORS_MSG, "fa-exclamation-triangle"); }
+                const draw = () => { if (!camRec) return; if (s.el.naturalWidth) g.drawImage(s.el, 0, 0, canvas.width, canvas.height); camRecRaf = requestAnimationFrame(draw); };
+                stream = canvas.captureStream(25); camRecRaf = -1; setTimeout(() => { if (camRec) draw(); }, 0);
+            }
+            const mime = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'].find(t => MediaRecorder.isTypeSupported(t));
+            const recStream = new MediaStream(stream.getVideoTracks().concat(mic ? mic.getAudioTracks() : []));
+            try { camRec = new MediaRecorder(recStream, mime ? { mimeType: mime, videoBitsPerSecond: 4000000, audioBitsPerSecond: 128000 } : undefined); }
+            catch (e) { camRec = null; if (mic) mic.getTracks().forEach(t => t.stop()); return showToast("Không bắt đầu quay được.", "fa-exclamation-triangle"); }
+            camRecChunks = []; const rec = camRec, ext = (rec.mimeType || mime || '').includes('mp4') ? 'mp4' : 'webm';
+            rec.ondataavailable = e => { if (e.data && e.data.size) camRecChunks.push(e.data); };
+            rec.onstop = () => {
+                cancelAnimationFrame(camRecRaf); clearInterval(camRecTimer); if (mic) mic.getTracks().forEach(t => t.stop());
+                camEl('cam-rec-btn').classList.remove('rec'); camEl('cam-rec-time').textContent = ''; camEl('cam-rec-icon').className = 'fa-solid fa-circle';
+                if (camRec === rec) camRec = null;
+                if (camRecChunks.length) { camDownload(new Blob(camRecChunks, { type: rec.mimeType || 'video/webm' }), 'cam_' + camStamp() + '.' + ext); showToast("Đã lưu video và tải về máy!", "fa-video"); }
+                camRecChunks = [];
+            };
+            rec.start(1000);
+            const t0 = Date.now(), p = n => String(n).padStart(2, '0');
+            camEl('cam-rec-btn').classList.add('rec'); camEl('cam-rec-icon').className = 'fa-solid fa-stop';
+            camRecTimer = setInterval(() => { const t = Math.floor((Date.now() - t0) / 1000); camEl('cam-rec-time').textContent = ' ' + p(Math.floor(t / 60)) + ':' + p(t % 60); }, 500);
+            camEl('cam-rec-time').textContent = ' 00:00';
+            showToast(mic ? "Đang quay video có âm thanh..." : "Đang quay video (không có tiếng)...", mic ? "fa-video" : "fa-video-slash");
+        }
+        function camRecStop() { if (camRec && camRec.state !== 'inactive') camRec.stop(); }
+
+        function stopCameraStream() {
+            if (typeof camRecStop === 'function') camRecStop();
+            const offScreen = document.getElementById('cam-off-screen');
+            const imgCam = document.getElementById('cam-stream-img');
+            const videoCam = document.getElementById('cam-stream-video');
+            const iframeCam = document.getElementById('cam-stream-iframe');
+
+            imgCam.src = "";
+            iframeCam.src = "";
+            
+            if (localMediaStream) {
+                localMediaStream.getTracks().forEach(track => track.stop());
+                localMediaStream = null;
+            }
+            videoCam.srcObject = null;
+
+            imgCam.classList.add('hidden');
+            videoCam.classList.add('hidden');
+            iframeCam.classList.add('hidden');
+            offScreen.classList.remove('hidden');
+
+            isCamActive = false;
+            setCamUi(false);
+            showToast("Đã tắt Camera!");
+        }
+
+
+        function applyHikvision() {
+            const ip = document.getElementById('hik-ip').value.trim();
+            const pass = document.getElementById('hik-pass').value;
+            const host = document.getElementById('hik-host').value.trim() || 'localhost';
+            let ch = document.getElementById('hik-ch').value.trim() || '102';
+            if (ch === '554' || ch.length > 3) { ch = '102'; document.getElementById('hik-ch').value = ch; showToast("Ô này là KÊNH (101/102), không phải cổng. Đã đổi về 102.", "fa-exclamation-triangle"); }
+            if (!ip || !pass) { showToast("Nhập IP camera và mật khẩu!", "fa-exclamation-triangle"); return; }
+            const yaml = "streams:\n  cam1: rtsp://admin:" + encodeURIComponent(pass) + "@" + ip + ":554/Streaming/Channels/" + ch + "\n";
+            document.getElementById('hik-yaml').value = yaml;
+            document.getElementById('cam-type-select').value = 'mjpeg';
+            document.getElementById('cam-url-input').value = "http://" + host + ":1984/api/stream.mjpeg?src=cam1";
+            saveCamUrl();
+        }
+
+        function copyHikYaml() {
+            const ta = document.getElementById('hik-yaml');
+            if (!ta.value) { showToast("Hãy bấm TẠO CẤU HÌNH trước!", "fa-exclamation-triangle"); return; }
+            ta.select();
+            try { document.execCommand('copy'); showToast("Đã copy go2rtc.yaml!"); } catch (e) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const img = document.getElementById('cam-stream-img');
+            img.addEventListener('error', function () {
+                if (isCamActive && img.getAttribute('src')) showToast("Không kết nối được. Kiểm tra go2rtc đang chạy!", "fa-exclamation-triangle");
+            });
+        });
+
+        function toggleCamFullscreen() {
+            const container = document.getElementById('camera-box-container');
+            const icon = document.getElementById('cam-fullscreen-icon');
+
+            if (container.classList.contains('cam-fullscreen')) {
+                container.classList.remove('cam-fullscreen');
+                icon.className = "fa-solid fa-expand";
+                showToast("Đã thu nhỏ Camera");
+            } else {
+                container.classList.add('cam-fullscreen');
+                icon.className = "fa-solid fa-compress";
+                showToast("Đã phóng to Full Màn Hình Camera");
+            }
+        }
+
+        // ===== PLAN: đọc file Excel (.xlsx) =====
+        function xmlDecode(s) { return String(s).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&#(\d+);/g,(m,n)=>String.fromCodePoint(+n)).replace(/&#x([0-9a-f]+);/gi,(m,n)=>String.fromCodePoint(parseInt(n,16))).replace(/&amp;/g,'&'); }
+        function xmlAttrs(tag) { const o = {}; tag.replace(/([\w:.-]+)\s*=\s*"([^"]*)"/g, (m,k,v) => { o[k] = xmlDecode(v); return m; }); return o; }
+        function xlsxResolve(baseDir, target) { if (target.charAt(0) === '/') return target.slice(1); const parts = baseDir ? baseDir.split('/') : []; target.split('/').forEach(seg => { if (seg === '..') parts.pop(); else if (seg && seg !== '.') parts.push(seg); }); return parts.join('/'); }
+        function xlsxRels(txt) { const m = {}; (txt || '').replace(/<Relationship\b[^>]*>/g, t => { const a = xmlAttrs(t); if (a.Id) m[a.Id] = a; return t; }); return m; }
+        function colIndex(ref) { let n = 0; for (const ch of ref.match(/^[A-Z]+/)[0]) n = n * 26 + ch.charCodeAt(0) - 64; return n; }
+        function normKey(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
+        function toNum(v) { if (typeof v === 'number') return v; if (v == null) return 0; const n = parseFloat(String(v).replace(/[%\s]/g,'').replace(/,/g,'')); return isNaN(n) ? 0 : n; }
+
+        async function parseXlsxFiles(io) {
+            const wb = await io.text('xl/workbook.xml');
+            if (!wb) throw new Error('Không phải file .xlsx hợp lệ');
+            const sh = (wb.match(/<sheet\b[^>]*>/) || [])[0];
+            const rid = sh && xmlAttrs(sh)['r:id'];
+            const wbRels = xlsxRels(await io.text('xl/_rels/workbook.xml.rels'));
+            const sheetPath = rid && wbRels[rid] ? xlsxResolve('xl', wbRels[rid].Target) : 'xl/worksheets/sheet1.xml';
+            const sheetDir = sheetPath.slice(0, sheetPath.lastIndexOf('/'));
+            const sheetFile = sheetPath.split('/').pop();
+
+            const sst = [];
+            const sstTxt = await io.text('xl/sharedStrings.xml');
+            if (sstTxt) sstTxt.replace(/<si\b[^>]*>([\s\S]*?)<\/si>/g, (m, b) => {
+                b = b.replace(/<rPh\b[\s\S]*?<\/rPh>/g, ''); let t = '';
+                b.replace(/<t\b[^>]*>([\s\S]*?)<\/t>/g, (mm, x) => { t += xmlDecode(x); return mm; });
+                sst.push(t); return m;
+            });
+
+            const sheetXml = await io.text(sheetPath);
+            if (!sheetXml) throw new Error('Không đọc được sheet đầu tiên');
+            const cells = {};
+            sheetXml.replace(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g, (m, at, inner) => {
+                const a = xmlAttrs(at); const rm = a.r && a.r.match(/^([A-Z]+)(\d+)$/); if (!rm) return m;
+                inner = inner || ''; let v = null; const vv = inner.match(/<v>([\s\S]*?)<\/v>/);
+                if (a.t === 's' && vv) v = sst[+vv[1]];
+                else if (a.t === 'inlineStr') { let t = ''; inner.replace(/<t\b[^>]*>([\s\S]*?)<\/t>/g, (mm, x) => { t += xmlDecode(x); return mm; }); v = t; }
+                else if (a.t === 'str' && vv) v = xmlDecode(vv[1]);
+                else if (vv && a.t !== 'e' && a.t !== 'b') v = parseFloat(vv[1]);
+                (cells[+rm[2]] = cells[+rm[2]] || {})[colIndex(a.r)] = { v: v, vm: a.vm ? +a.vm : 0 };
+                return m;
+            });
+            const rowNums = Object.keys(cells).map(Number).sort((a, b) => a - b);
+
+            let hr = 0, col = {};
+            for (const r of rowNums) {
+                if (r > 30) break; const c = {};
+                for (const k in cells[r]) {
+                    const t = normKey(cells[r][k].v);
+                    if (t === 'name' || t === 'ten' || t === 'ten san pham') c.name = +k;
+                    else if (t.indexOf('need') >= 0 || t.indexOf('required') >= 0) c.need = +k;
+                    else if (t.indexOf('complete') === 0 && t.indexOf('completion') !== 0) c.done = +k;
+                    else if (t.indexOf('pending') === 0 || t.indexOf('remain') === 0) c.pend = +k;
+                    else if (t.indexOf('capa') >= 0) c.capa = +k;
+                    else if (t === 'purpose') c.purpose = +k;
+                    else if (t.indexOf('material') === 0) c.mat = +k;
+                    else if (t.indexOf('work') === 0) c.time = +k;
+                }
+                if (c.name && c.need && c.done) { hr = r; col = c; break; }
+            }
+            if (!hr) throw new Error('Không thấy hàng tiêu đề (NAME, NEED TOTAL, COMPLETE)');
+
+            const imgByRow = {};
+            const media = async (path) => {
+                const mime = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif', webp:'image/webp', bmp:'image/bmp' }[(path.split('.').pop() || '').toLowerCase()];
+                if (!mime) return null; const b = await io.b64(path); return b ? 'data:' + mime + ';base64,' + b : null;
+            };
+            // Ảnh nổi (floating) gắn theo hàng
+            const sRels = xlsxRels(await io.text(sheetDir + '/_rels/' + sheetFile + '.rels'));
+            let drawPath = null;
+            for (const id in sRels) if (/\/drawing$/.test(sRels[id].Type || '')) drawPath = xlsxResolve(sheetDir, sRels[id].Target);
+            if (drawPath) {
+                const dx = await io.text(drawPath);
+                const dRels = xlsxRels(await io.text(drawPath.replace(/([^\/]+)$/, '_rels/$1.rels')));
+                const anchors = (dx || '').match(/<(?:\w+:)?(?:twoCellAnchor|oneCellAnchor)\b[\s\S]*?<\/(?:\w+:)?(?:twoCellAnchor|oneCellAnchor)>/g) || [];
+                for (const an of anchors) {
+                    const f = an.match(/<(?:\w+:)?from>[\s\S]*?<(?:\w+:)?row>(\d+)</);
+                    const t = an.match(/<(?:\w+:)?to>[\s\S]*?<(?:\w+:)?row>(\d+)</);
+                    const e = an.match(/\w+:embed="([^"]+)"/);
+                    if (!f || !e || !dRels[e[1]]) continue;
+                    const row = Math.floor((+f[1] + (t ? +t[1] : +f[1])) / 2) + 1;
+                    if (imgByRow[row]) continue;
+                    const u = await media(xlsxResolve(drawPath.slice(0, drawPath.lastIndexOf('/')), dRels[e[1]].Target));
+                    if (u) imgByRow[row] = u;
+                }
+            }
+            // Ảnh trong ô (Place in cell)
+            const rvx = await io.text('xl/richData/rdrichvalue.xml');
+            if (rvx) {
+                const rvList = []; rvx.replace(/<rv\b[^>]*>([\s\S]*?)<\/rv>/g, (m, b) => { const v = b.match(/<v>([\s\S]*?)<\/v>/); rvList.push(v ? +v[1] : -1); return m; });
+                const relIds = []; ((await io.text('xl/richData/richValueRel.xml')) || '').replace(/<rel\b[^>]*>/g, t => { relIds.push(xmlAttrs(t)['r:id']); return t; });
+                const rr = xlsxRels(await io.text('xl/richData/_rels/richValueRel.xml.rels'));
+                for (const r of rowNums) {
+                    if (r <= hr || imgByRow[r]) continue;
+                    for (const k in cells[r]) {
+                        const vm = cells[r][k].vm; if (!vm) continue;
+                        const id = relIds[rvList[vm - 1]];
+                        if (id && rr[id]) { const u = await media(xlsxResolve('xl/richData', rr[id].Target)); if (u) { imgByRow[r] = u; break; } }
+                    }
+                }
+            }
+
+            const rows = [];
+            for (const r of rowNums) {
+                if (r <= hr) continue; const rc = cells[r]; const nm = rc[col.name] && rc[col.name].v;
+                if (nm == null || String(nm).trim() === '') continue;
+                const cv = k => (col[k] && rc[col[k]] && rc[col[k]].v != null && rc[col[k]].v !== '') ? rc[col[k]].v : null;
+                rows.push({
+                    row: r, name: String(nm).trim(),
+                    need: toNum(cv('need')), done: toNum(cv('done')),
+                    capa: cv('capa') != null ? toNum(cv('capa')) : null,
+                    purpose: cv('purpose') != null ? String(cv('purpose')).trim() : null,
+                    mat: cv('mat'), time: cv('time'),
+                    image: imgByRow[r] || null
+                });
+            }
+            return rows;
+        }
+
+        function fmtNum(n) { return Number(n).toLocaleString('en-US'); }
+        function escHtml(t) { return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        // ===== PLAN: full table (all Excel columns), reads the shared `products` list =====
+        function fmtVal(v) {
+            if (v == null || v === '') return '<span class="na">—</span>';
+            if (typeof v === 'number') return Number(v).toLocaleString('en-US', { maximumFractionDigits: 2 });
+            return escHtml(v);
+        }
+        function zoomImg(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('img-lightbox').classList.add('open');
+        }
+        function closeZoom() { document.getElementById('img-lightbox').classList.remove('open'); }
+
+        function renderPlan() {
+            const q = (document.getElementById('plan-search').value || '').trim().toLowerCase();
+            const list = products.map((p, i) => ({ p: p, no: i + 1 }))
+                .filter(x => !q || String(x.p.name).toLowerCase().includes(q) || String(x.p.purpose || '').toLowerCase().includes(q));
+            document.getElementById('plan-body').innerHTML = list.map(x => {
+                const p = x.p, need = Number(p.totalPlan) || 0, done = Number(p.actual) || 0, pend = getPending(p);
+                const pct = calculateCompletionRate(done, need);
+                const c = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--cyan)' : pct >= 20 ? 'var(--amber)' : 'var(--rose)';
+                const img = escHtml(p.image || PLACEHOLDER_IMG);
+                return '<tr data-i="' + (x.no - 1) + '"><td class="p-no">' + x.no + '</td>' +
+                    '<td class="p-name">' + escHtml(p.name) + '</td>' +
+                    '<td class="p-purpose">' + (p.purpose ? escHtml(p.purpose) : '<span class="na">—</span>') + '</td>' +
+                    '<td class="p-img"><div class="p-img-box" onclick="zoomImg(this.querySelector(\'img\').src)" title="Click to enlarge"><img src="' + img + '" alt="" onerror="this.onerror=null;this.src=PLACEHOLDER_IMG"></div></td>' +
+                    '<td class="p-need">' + fmtNum(need) + '</td>' +
+                    '<td class="p-capa">' + (p.dailyTarget != null && p.dailyTarget !== '' ? fmtNum(p.dailyTarget) : '<span class="na">—</span>') + '</td>' +
+                    '<td class="p-done">' + fmtNum(done) + '</td>' +
+                    '<td class="p-pend' + (pend === 0 ? ' zero' : '') + '">' + fmtNum(pend) + '</td>' +
+                    '<td class="p-fin"><span class="pct" style="color:' + c + '">' + pct + '%</span><div class="pct-bar"><div style="width:' + Math.min(100, pct) + '%;background:' + c + '"></div></div></td>' +
+                    '<td class="p-mat">' + fmtVal(p.material) + '</td>' +
+                    '<td class="p-time">' + fmtVal(p.workTime) + '</td></tr>';
+            }).join('') || '<tr><td colspan="11" style="padding:2rem;color:#64748b;font-family:inherit">Chưa có sản phẩm. Bấm IMPORT EXCEL để nạp danh sách.</td></tr>';
+            const sumNeed = list.reduce((a, x) => a + (Number(x.p.totalPlan) || 0), 0);
+            const sumDone = list.reduce((a, x) => a + (Number(x.p.actual) || 0), 0);
+            const sumPend = list.reduce((a, x) => a + getPending(x.p), 0);
+            document.getElementById('ps-count').textContent = list.length;
+            document.getElementById('ps-need').textContent = fmtNum(sumNeed);
+            document.getElementById('ps-done').textContent = fmtNum(sumDone);
+            document.getElementById('ps-pend').textContent = fmtNum(sumPend);
+            document.getElementById('ps-rate').textContent = calculateCompletionRate(sumDone, sumNeed) + '%';
+            document.getElementById('plan-foot').textContent = 'Showing ' + list.length + ' / ' + products.length + ' products  •  Shared data with the main list  •  Click an image to enlarge  •  Esc to close';
+        }
+
+        function openPlan() { renderPlan(); document.getElementById('plan-overlay').classList.add('open'); }
+        function closePlan() { document.getElementById('plan-overlay').classList.remove('open'); }
+        function planRowTap(e) {
+            if (e.target.closest('.p-img-box')) return;
+            const tr = e.target.closest('tr[data-i]'); if (!tr) return;
+            const i = +tr.dataset.i; effTap('p' + i, () => openPlanDetail(i));
+        }
+        function openPlanDetail(i) {
+            const p = products[i]; if (!p) return; const $ = id => document.getElementById(id);
+            const need = Number(p.totalPlan) || 0, done = Number(p.actual) || 0, pend = getPending(p), pct = calculateCompletionRate(done, need);
+            const c = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--cyan)' : pct >= 20 ? 'var(--amber)' : 'var(--rose)';
+            $('pd-img').src = p.image || PLACEHOLDER_IMG; $('pd-name').textContent = p.name;
+            $('pd-purpose').innerHTML = p.purpose ? escHtml(p.purpose) : '<span class="na">—</span>';
+            $('pd-need').textContent = fmtNum(need);
+            $('pd-capa').innerHTML = p.dailyTarget != null && p.dailyTarget !== '' ? fmtNum(p.dailyTarget) : '<span class="na">—</span>';
+            $('pd-done').textContent = fmtNum(done); $('pd-pend').textContent = fmtNum(pend); $('pd-rate').textContent = pct + '%';
+            $('pd-bar').style.cssText = 'height:100%;border-radius:99px;width:' + Math.max(0, Math.min(100, pct)) + '%;background:' + c;
+            $('pd-mat').innerHTML = fmtVal(p.material); $('pd-time').innerHTML = fmtVal(p.workTime);
+            $('plan-detail').classList.add('open');
+        }
+        function closePlanDetail() { document.getElementById('plan-detail').classList.remove('open'); }
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (document.getElementById('img-lightbox').classList.contains('open')) closeZoom(); else if (document.getElementById('plan-detail').classList.contains('open')) closePlanDetail(); else closePlan(); } });
+
+        function jszipIO(zip) {
+            return {
+                text: async p => { const f = zip.file(p); return f ? await f.async('string') : null; },
+                b64: async p => { const f = zip.file(p); return f ? await f.async('base64') : null; }
+            };
+        }
+
+        function shrinkImage(src, maxW) {
+            return new Promise(res => {
+                const im = new Image();
+                im.onload = () => {
+                    try {
+                        const sc = Math.min(1, maxW / im.width), c = document.createElement('canvas');
+                        c.width = Math.max(1, Math.round(im.width * sc)); c.height = Math.max(1, Math.round(im.height * sc));
+                        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.imageSmoothingQuality = 'high'; g.drawImage(im, 0, 0, c.width, c.height);
+                        res(c.toDataURL('image/jpeg', 0.9));
+                    } catch (e) { res(src); }
+                };
+                im.onerror = () => res(src);
+                im.src = src;
+            });
+        }
+
+        // Nạp Excel -> cập nhật thẳng vào `products` (khớp theo tên), thêm SP mới, tự lưu
+        async function importPlanExcel(file) {
+            if (!file) return;
+            if (!window.JSZip) { showToast('Không tải được thư viện đọc Excel (cần internet)!', 'fa-exclamation-triangle'); return; }
+            try {
+                const rows = await parseXlsxFiles(jszipIO(await JSZip.loadAsync(file)));
+                if (!rows.length) { showToast('File không có dòng sản phẩm nào!', 'fa-exclamation-triangle'); return; }
+                const sync = document.getElementById('plan-sync').checked;
+                let nUp = 0, nNew = 0, nextId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                const used = new Set(), order = [];
+                for (const r of rows) {
+                    const key = normKey(r.name);
+                    const img = r.image ? await shrinkImage(r.image, 1280) : null;
+                    let p = products.find(x => !used.has(x.id) && normKey(x.name) === key);
+                    if (p) nUp++;
+                    else {
+                        p = { id: nextId++, name: r.name, image: PLACEHOLDER_IMG, dailyTarget: 0 };
+                        products.push(p); nNew++;
+                    }
+                    p.totalPlan = r.need; p.actual = r.done;
+                    if (r.capa != null) p.dailyTarget = r.capa;
+                    if (r.purpose != null) p.purpose = r.purpose;
+                    if (r.mat != null) p.material = r.mat;
+                    if (r.time != null) p.workTime = r.time;
+                    delete p.pending;
+                    if (img) p.image = img;
+                    used.add(p.id); order.push(p);
+                }
+                if (sync) products = order;
+                if (!products.some(p => p.id === selectedProductId)) selectedProductId = products[0] ? products[0].id : null;
+                renderDashboard(); saveToLocalStorage(true); renderPlan();
+                showToast('Đã cập nhật ' + nUp + ', thêm mới ' + nNew + ' sản phẩm từ Excel');
+            } catch (err) {
+                console.error(err);
+                showToast('Lỗi đọc Excel: ' + err.message, 'fa-exclamation-triangle');
+            }
+        }
+    </script>
+
+<div id="plan-overlay" role="dialog" aria-label="PLAN TOTAL 3D LAB">
+  <div class="card plan-top">
+    <h2><i class="fa-solid fa-table-list"></i> PLAN TOTAL 3D LAB</h2>
+    <div class="plan-sum">
+      <div>Total ITEM<b id="ps-count">0</b></div>
+      <div style="--c:#fff">Total needed<b id="ps-need">0</b></div>
+      <div style="--c:#60a5fa">Complete<b id="ps-done">0</b></div>
+      <div style="--c:#fb7185">Pending<b id="ps-pend">0</b></div>
+      <div style="--c:var(--green)">Rate<b id="ps-rate">0%</b></div>
+    </div>
+    <div class="plan-tools">
+      <input id="plan-search" type="search" placeholder="Search name / purpose..." oninput="renderPlan()">
+      <label class="plan-sync" title="Bật: danh sách trang chính sẽ giống hệt file Excel (xóa SP không có trong file)"><input type="checkbox" id="plan-sync"> Ony show in Excel file </label>
+      <input type="file" id="plan-file" accept=".xlsx,.xlsm" hidden onchange="importPlanExcel(this.files[0]); this.value=''">
+      <button onclick="document.getElementById('plan-file').click()" class="btn b-teal"><i class="fa-solid fa-file-import"></i> IMPORT EXCEL</button>
+      <button onclick="closePlan()" class="btn" style="background:linear-gradient(135deg,#be123c,#fb4a6b)"><i class="fa-solid fa-xmark"></i> CLOSE</button>
+    </div>
+  </div>
+  <div class="card plan-card">
+    <div id="plan-scroll">
+      <table>
+        <thead><tr>
+          <th class="g-y stick-no">No</th><th class="g-y stick-name" style="text-align:left">Name</th><th class="g-g" style="text-align:left">Purpose</th><th class="g-y">Image</th>
+          <th class="g-y">Total<br>Needed</th><th class="g-y">Daily<br>Capacity</th><th class="c-done">Complete</th><th class="c-pend">Pending</th>
+          <th class="g-y">Rate<br>(%)</th><th class="g-g">Material /<br>ITEM <span style="text-transform:none">(g)</span></th><th class="g-g">Working<br>Time / EA</th>
+        </tr></thead>
+        <tbody id="plan-body" onclick="planRowTap(event)"></tbody>
+      </table>
+    </div>
+    <div class="plan-foot" id="plan-foot"></div>
+  </div>
+  <div id="plan-detail" onclick="effTap('pd', closePlanDetail)">
+    <div class="ed-card">
+      <div class="ed-img"><img id="pd-img" alt=""></div>
+      <div>
+        <h3 class="ed-name" id="pd-name"></h3>
+        <div class="ed-row" style="--c:#a78bfa"><span>Purpose</span><b id="pd-purpose" style="font-family:'Be Vietnam Pro',system-ui,sans-serif;font-size:1rem;text-align:right;white-space:pre-line"></b></div>
+        <div class="ed-row" style="--c:#fff"><span>Total Needed</span><b id="pd-need"></b></div>
+        <div class="ed-row" style="--c:#22d3ee"><span>Daily Capacity</span><b id="pd-capa"></b></div>
+        <div class="ed-row" style="--c:#60a5fa"><span>Complete</span><b id="pd-done"></b></div>
+        <div class="ed-row" style="--c:#fb7185"><span>Pending</span><b id="pd-pend"></b></div>
+        <div class="ed-row" style="--c:var(--green)"><span>Rate (%)</span><b id="pd-rate"></b></div>
+        <div class="pct-bar" style="width:100%;margin:.2rem 0 .6rem"><div id="pd-bar"></div></div>
+        <div class="ed-row" style="--c:#e2e8f0"><span>Material / ITEM (g)</span><b id="pd-mat"></b></div>
+        <div class="ed-row" style="--c:#e2e8f0"><span>Working Time / EA (minute)</span><b id="pd-time"></b></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:.9rem">
+          <button class="btn" style="background:linear-gradient(135deg,#be123c,#fb4a6b)" onclick="event.stopPropagation();closePlanDetail()"><i class="fa-solid fa-xmark"></i> ĐÓNG</button>
+        </div>
+        <div class="ed-hint">A TUẤN DEV</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="eff-overlay" role="dialog" aria-label="COST-EFFECTIVE 3D PRINTING">
+  <div class="card plan-top">
+    <h2><i class="fa-solid fa-sack-dollar"></i> COST-EFFECTIVE 3D PRINTING</h2>
+    <div class="plan-sum">
+      <div>Total ITEM<b id="es-count">0</b></div>
+      <div style="--c:#fbbf24">Before (VND)<b id="es-before">0</b></div>
+      <div style="--c:#34d399">After (VND)<b id="es-after">0</b></div>
+      <div style="--c:#60a5fa">Costdown<b id="es-cost">0</b></div>
+      <div style="--c:#fb923c">Effective<b id="es-rate">0%</b></div>
+    </div>
+    <div class="plan-tools">
+      <input id="eff-search" type="search" placeholder="Search item..." oninput="renderEff()">
+      <input type="file" id="eff-file" accept=".xlsx,.xlsm" hidden onchange="importEffExcel(this.files[0]); this.value=''">
+      <button onclick="document.getElementById('eff-file').click()" class="btn b-teal"><i class="fa-solid fa-file-import"></i> IMPORT EXCEL</button>
+      <button onclick="closeEff()" class="btn" style="background:linear-gradient(135deg,#be123c,#fb4a6b)"><i class="fa-solid fa-xmark"></i> CLOSE</button>
+    </div>
+  </div>
+  <div class="card plan-card">
+    <div id="eff-scroll">
+      <table>
+        <thead>
+          <tr class="h1"><th class="stick-no" rowspan="2">NO</th><th class="stick-name" rowspan="2" style="text-align:left">NAME</th><th rowspan="2">NEED Q'TY</th>
+            <th colspan="2" class="hb" style="--hc:#fbbf24">BEFORE</th><th colspan="2" class="ha" style="--hc:#34d399">AFTER</th>
+            <th rowspan="2" class="hc" style="--hc:#60a5fa">COSTDOWN</th><th rowspan="2" class="he" style="--hc:#fb923c">EFFECTIVE</th></tr>
+          <tr class="h2"><th class="hb" style="--hc:#fbbf24">COSTS<br>(VND)</th><th class="hb" style="--hc:#fbbf24">IMAGE</th><th class="ha" style="--hc:#34d399">COSTS<br>(VND)</th><th class="ha" style="--hc:#34d399">IMAGE</th></tr>
+        </thead>
+        <tbody id="eff-body" onclick="effRowTap(event)"></tbody>
+      </table>
+    </div>
+    <div class="plan-foot" id="eff-foot"></div>
+  </div>
+  <input type="file" id="eff-img-file" accept="image/*" hidden onchange="effSetImage(this.files[0]); this.value=''">
+  <div id="eff-detail" onclick="effTap('d', closeEffDetail)">
+    <div class="ed-card">
+      <h3 class="ed-name" id="ed-name"></h3>
+      <table class="ed-tbl">
+        <thead><tr><th>Category</th><th>Need Q'ty</th><th>Price (VND)</th><th>Amount (VND)</th></tr></thead>
+        <tbody>
+          <tr class="r-b"><td>Before</td><td id="et-qb"></td><td id="et-pb"></td><td id="et-ab"></td></tr>
+          <tr class="r-a"><td>After</td><td id="et-qa"></td><td id="et-pa"></td><td id="et-aa"></td></tr>
+          <tr class="r-c"><td>Costdown</td><td></td><td id="et-pc"></td><td id="et-ac"></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4"><div class="ed-eff"><span>EFFECTIVE</span><div class="pct-bar" style="flex:1;margin:0"><div id="ed-bar"></div></div><b id="ed-rate"></b></div></td></tr></tfoot>
+      </table>
+      <div class="ed-pair">
+        <div class="ed-pane" style="--c:#fbbf24"><div class="ed-tag">BEFORE</div><div class="ed-img"><img class="ed-bg" id="ed-bg-b" alt=""><img id="ed-img-b" alt=""></div></div>
+        <div class="ed-pane" style="--c:#34d399"><div class="ed-tag">AFTER</div><div class="ed-img"><img class="ed-bg" id="ed-bg-a" alt=""><img id="ed-img-a" alt=""></div></div>
+      </div>
+      <div class="ed-btns">
+        <button class="btn b-teal" onclick="event.stopPropagation();effPickImg('B')"><i class="fa-solid fa-camera"></i> Image Before</button>
+        <button class="btn b-teal" onclick="event.stopPropagation();effPickImg('A')"><i class="fa-solid fa-camera"></i> Image After</button>
+        <button class="btn" style="background:linear-gradient(135deg,#be123c,#fb4a6b)" onclick="event.stopPropagation();closeEffDetail()"><i class="fa-solid fa-xmark"></i> ĐÓNG</button>
+      </div>
+      <div class="ed-hint">A TUẤN DEV</div>
+    </div>
+  </div>
+</div>
+<div id="img-lightbox" onclick="closeZoom()"><img id="lightbox-img" alt=""></div>
+<script>
+/* ===== ĐĂNG NHẬP / QUẢN LÝ TÀI KHOẢN (lưu trên trình duyệt) =====
+   Gửi mã qua email: đăng ký EmailJS (miễn phí) rồi điền 3 giá trị bên dưới. */
+const AUTH_CFG = { emailjs: { serviceId: '', templateId: '', publicKey: '' } };
+const AU_USERS = 'hs3d_users_v1', AU_SESS = 'hs3d_session';
+/* Tài khoản được nhúng sẵn khi admin bấm 'TẢI BẢN CHIA SẺ' (không sửa tay dòng dưới) */
+const AUTH_SEED = /*SEED*/null/*END*/;
+let auFail = 0, auLock = 0, auReset = null;
+const $id = i => document.getElementById(i), val = i => $id(i).value;
+const auUsers = () => { try { return JSON.parse(localStorage.getItem(AU_USERS)) || []; } catch (e) { return []; } };
+const auSave = u => localStorage.setItem(AU_USERS, JSON.stringify(u));
+const AU_REM = 'hs3d_remember', AU_LAST = 'hs3d_last_user';
+const auCur = () => auUsers().find(u => u.id === (sessionStorage.getItem(AU_SESS) || localStorage.getItem(AU_REM)));
+const auRand = n => [...crypto.getRandomValues(new Uint8Array(n))].map(x => x.toString(16).padStart(2, '0')).join('');
+const okEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+const toast = (m, i) => { if (typeof showToast === 'function') showToast(m, i); };
+function auMsg(t, ok) { const m = $id('au-msg'); m.textContent = t || ''; m.className = 'au-msg' + (ok ? ' ok' : ''); }
+function accMsg(t, ok) { const m = $id('acc-msg'); m.textContent = t || ''; m.className = 'au-msg' + (ok ? ' ok' : ''); m.style.margin = 0; }
+async function auHash(pw, salt) {
+  if (window.crypto && crypto.subtle) {
+    const enc = new TextEncoder(), k = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+    const b = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(salt), iterations: 100000 }, k, 256);
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+  }
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57; const s = salt + pw;
+  for (let r = 0; r < 2000; r++) for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+  return 'f' + (h1 >>> 0).toString(16) + (h2 >>> 0).toString(16);
+}
+function auEye(b) { const i = b.parentNode.querySelector('input'); const s = i.type === 'password'; i.type = s ? 'text' : 'password'; b.firstChild.className = s ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'; }
+function auShow(p) {
+  ['login', 'setup', 'forgot'].forEach(x => $id('au-' + x).style.display = x === p ? 'flex' : 'none');
+  $id('au-sub').textContent = { login: '3D PRINTING PLAN · Đăng nhập để tiếp tục', setup: 'Lần đầu sử dụng · Tạo tài khoản chủ', forgot: 'Khôi phục mật khẩu qua email' }[p];
+  if (p === 'forgot') { $id('fg-1').style.display = 'flex'; $id('fg-2').style.display = 'none'; }
+  auMsg('');
+}
+function auEnter(u, quiet) {
+  $id('auth-overlay').classList.add('off');
+  $id('acc-btn-name').textContent = u.name;
+  if (!quiet) toast('Xin chào, ' + u.name + '!', 'fa-user-check');
+}
+function auApplySeed() {
+  const s = AUTH_SEED; if (!s || !Array.isArray(s.users) || !s.users.length) return;
+  const lv = +localStorage.getItem('hs3d_seed_ver') || 0;
+  if (!auUsers().length || s.ver > lv) { auSave(s.users); localStorage.setItem('hs3d_seed_ver', s.ver); }
+}
+function auInit() {
+  auApplySeed();
+  const us = auUsers();
+  if (!us.length) return auShow('setup');
+  const c = auCur(); if (c) auEnter(c, true); else { auShow('login'); $id('li-user').value = localStorage.getItem(AU_LAST) || ''; }
+}
+async function auSetup() {
+  const name = val('su-name').trim(), email = val('su-email').trim(), p1 = val('su-p1');
+  if (!name) return auMsg('Nhập tên tài khoản.');
+  if (!okEmail(email)) return auMsg('Email không hợp lệ.');
+  if (p1.length < 6) return auMsg('Mật khẩu tối thiểu 6 ký tự.');
+  if (p1 !== val('su-p2')) return auMsg('Mật khẩu nhập lại không khớp.');
+  const salt = auRand(16), u = { id: auRand(8), name, email, role: 'admin', salt, hash: await auHash(p1, salt) };
+  auSave([u]); sessionStorage.setItem(AU_SESS, u.id); localStorage.setItem(AU_REM, u.id); localStorage.setItem(AU_LAST, u.name); auEnter(u);
+}
+async function auLogin() {
+  if (Date.now() < auLock) return auMsg('Sai quá nhiều lần, đợi ' + Math.ceil((auLock - Date.now()) / 1000) + ' giây.');
+  const id = val('li-user').trim().toLowerCase(), pw = val('li-pass');
+  if (!id || !pw) return auMsg('Nhập tên đăng nhập và mật khẩu.');
+  const u = auUsers().find(x => x.name.toLowerCase() === id || (x.email || '').toLowerCase() === id);
+  if (!u || await auHash(pw, u.salt) !== u.hash) { if (++auFail >= 5) { auLock = Date.now() + 30000; auFail = 0; } return auMsg('Sai tên đăng nhập hoặc mật khẩu.'); }
+  auFail = 0; sessionStorage.setItem(AU_SESS, u.id); if ($id('li-rem').checked) localStorage.setItem(AU_REM, u.id); else localStorage.removeItem(AU_REM); localStorage.setItem(AU_LAST, u.name); $id('li-pass').value = ''; auMsg(''); auEnter(u);
+}
+function auLogout() { sessionStorage.removeItem(AU_SESS); localStorage.removeItem(AU_REM); location.reload(); }
+async function auSendCode() {
+  const id = val('fg-id').trim().toLowerCase();
+  const u = auUsers().find(x => x.name.toLowerCase() === id || (x.email || '').toLowerCase() === id);
+  if (!u || !u.email) return auMsg('Không tìm thấy tài khoản (hoặc tài khoản chưa có email).');
+  if (auReset && Date.now() - auReset.sent < 60000) return auMsg('Vui lòng đợi 1 phút rồi gửi lại.');
+  const c = AUTH_CFG.emailjs;
+  if (!c.serviceId || !c.templateId || !c.publicKey) return auMsg('Chưa cấu hình gửi email (EmailJS) trong file.');
+  const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 900000 + 100000);
+  auMsg('Đang gửi mã...', true);
+  try {
+    const r = await fetch('https://api.emailjs.com/api/v1.0/email/send', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ service_id: c.serviceId, template_id: c.templateId, user_id: c.publicKey, template_params: { to_email: u.email, user_name: u.name, code, minutes: 10 } }) });
+    if (!r.ok) throw new Error(await r.text());
+  } catch (e) { return auMsg('Gửi email thất bại: ' + String(e.message || e).slice(0, 80)); }
+  auReset = { uid: u.id, code, exp: Date.now() + 600000, tries: 0, sent: Date.now() };
+  $id('fg-1').style.display = 'none'; $id('fg-2').style.display = 'flex';
+  auMsg('Đã gửi mã tới ' + u.email.replace(/^(.).*(@.*)$/, '$1***$2') + ' (hiệu lực 10 phút).', true);
+}
+async function auDoReset() {
+  if (!auReset) return auMsg('Hãy gửi mã trước.');
+  if (Date.now() > auReset.exp) { auReset = null; return auMsg('Mã đã hết hạn, gửi lại mã mới.'); }
+  if (++auReset.tries > 5) { auReset = null; return auMsg('Nhập sai quá nhiều lần, gửi lại mã mới.'); }
+  if (val('fg-code').trim() !== auReset.code) return auMsg('Mã xác thực không đúng.');
+  const p1 = val('fg-p1'); if (p1.length < 6) return auMsg('Mật khẩu tối thiểu 6 ký tự.');
+  if (p1 !== val('fg-p2')) return auMsg('Mật khẩu nhập lại không khớp.');
+  const us = auUsers(), u = us.find(x => x.id === auReset.uid); if (!u) return auMsg('Tài khoản không còn tồn tại.');
+  u.salt = auRand(16); u.hash = await auHash(p1, u.salt); auSave(us); auReset = null;
+  auShow('login'); auMsg('Đã đổi mật khẩu. Hãy đăng nhập lại.', true);
+}
+/* ----- Quản lý tài khoản ----- */
+function accOpen() {
+  const u = auCur(); if (!u) return;
+  $id('acc-name').value = u.name; $id('acc-email').value = u.email || '';
+  const r = $id('acc-role'); r.textContent = u.role === 'admin' ? 'ADMIN' : 'USER'; r.className = 'acc-badge' + (u.role === 'admin' ? ' admin' : '');
+  $id('acc-admin').style.display = u.role === 'admin' ? 'block' : 'none';
+  ['acc-old', 'acc-new', 'acc-new2'].forEach(i => $id(i).value = ''); accMsg(''); accList(); $id('acc-modal').classList.add('on');
+}
+function accClose() { $id('acc-modal').classList.remove('on'); }
+function accList() {
+  const box = $id('acc-list'), me = auCur(); box.innerHTML = ''; if (!me || me.role !== 'admin') return;
+  auUsers().forEach(u => {
+    const row = document.createElement('div'); row.className = 'acc-user';
+    const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = u.name;
+    const bd = document.createElement('span'); bd.className = 'acc-badge' + (u.role === 'admin' ? ' admin' : ''); bd.textContent = u.role.toUpperCase();
+    const em = document.createElement('span'); em.className = 'em'; em.textContent = u.email || '(chưa có email)';
+    row.append(nm, bd, em);
+    const rs = document.createElement('button'); rs.className = 'au-btn sm'; rs.textContent = 'Đặt lại MK'; rs.onclick = () => accAdminPw(u.id);
+    row.append(rs);
+    if (u.id !== me.id) { const d = document.createElement('button'); d.className = 'au-btn danger sm'; d.textContent = 'Xóa'; d.onclick = () => accDelete(u.id); row.append(d); }
+    box.append(row);
+  });
+}
+function accSaveProfile() {
+  const us = auUsers(), me = us.find(x => x.id === auCur()?.id); if (!me) return;
+  const name = val('acc-name').trim(), email = val('acc-email').trim();
+  if (!name) return accMsg('Nhập tên tài khoản.');
+  if (us.some(x => x.id !== me.id && x.name.toLowerCase() === name.toLowerCase())) return accMsg('Tên này đã có người dùng.');
+  if (email && !okEmail(email)) return accMsg('Email không hợp lệ.');
+  if (me.role === 'admin' && !email) return accMsg('Admin cần có email để khôi phục mật khẩu.');
+  me.name = name; me.email = email; auSave(us); $id('acc-btn-name').textContent = name; accList(); accMsg('Đã lưu thông tin.', true);
+}
+async function accSavePw() {
+  const us = auUsers(), me = us.find(x => x.id === auCur()?.id); if (!me) return;
+  if (await auHash(val('acc-old'), me.salt) !== me.hash) return accMsg('Mật khẩu hiện tại không đúng.');
+  const p = val('acc-new'); if (p.length < 6) return accMsg('Mật khẩu mới tối thiểu 6 ký tự.');
+  if (p !== val('acc-new2')) return accMsg('Mật khẩu nhập lại không khớp.');
+  me.salt = auRand(16); me.hash = await auHash(p, me.salt); auSave(us);
+  ['acc-old', 'acc-new', 'acc-new2'].forEach(i => $id(i).value = ''); accMsg('Đã đổi mật khẩu.', true);
+}
+async function accCreate() {
+  const me = auCur(); if (!me || me.role !== 'admin') return;
+  const us = auUsers(), name = val('nu-name').trim(), pw = val('nu-pass'), email = val('nu-email').trim();
+  if (!name) return accMsg('Nhập tên đăng nhập.');
+  if (us.some(x => x.name.toLowerCase() === name.toLowerCase())) return accMsg('Tên này đã tồn tại.');
+  if (pw.length < 6) return accMsg('Mật khẩu tối thiểu 6 ký tự.');
+  if (email && !okEmail(email)) return accMsg('Email không hợp lệ.');
+  const salt = auRand(16); us.push({ id: auRand(8), name, email, role: val('nu-role'), salt, hash: await auHash(pw, salt) }); auSave(us);
+  ['nu-name', 'nu-pass', 'nu-email'].forEach(i => $id(i).value = ''); accList(); accMsg('Đã tạo tài khoản "' + name + '".', true);
+}
+function accDelete(id) {
+  const me = auCur(), us = auUsers(), t = us.find(x => x.id === id); if (!me || me.role !== 'admin' || !t || t.id === me.id) return;
+  if (!confirm('Xóa tài khoản "' + t.name + '"?')) return;
+  auSave(us.filter(x => x.id !== id)); accList(); accMsg('Đã xóa "' + t.name + '".', true);
+}
+async function accShare() {
+  const me = auCur(); if (!me || me.role !== 'admin') return;
+  let src;
+  try { const r = await fetch(location.href.split('#')[0], { cache: 'no-store' }); if (!r.ok) throw 0; src = await r.text(); }
+  catch (e) { return accMsg('Không đọc được file gốc. Hãy mở trang bằng link https hoặc localhost (không mở trực tiếp từ file).'); }
+  const re = /\/\*SEED\*\/[\s\S]*?\/\*END\*\//;
+  if (!re.test(src)) return accMsg('Không tìm thấy vị trí nhúng tài khoản trong file.');
+  const ver = Date.now(), json = JSON.stringify({ ver, users: auUsers() }).replace(/</g, '\\u003c').replace(/\//g, '\\/');
+  src = src.replace(re, () => '/*SEED*/' + json + '/*END*/');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([src], { type: 'text/html' }));
+  a.download = 'View3D_share.html'; document.body.appendChild(a); a.click(); a.remove();
+  localStorage.setItem('hs3d_seed_ver', ver); accMsg('Đã tải bản chia sẻ. Gửi file này cho người khác, họ chỉ cần đăng nhập.', true);
+}
+async function accAdminPw(id) {
+  const me = auCur(); if (!me || me.role !== 'admin') return;
+  const us = auUsers(), t = us.find(x => x.id === id); if (!t) return;
+  const p = prompt('Mật khẩu mới cho "' + t.name + '" (tối thiểu 6 ký tự):'); if (p === null) return;
+  if (p.length < 6) return accMsg('Mật khẩu tối thiểu 6 ký tự.');
+  t.salt = auRand(16); t.hash = await auHash(p, t.salt); auSave(us); accMsg('Đã đặt lại mật khẩu cho "' + t.name + '".', true);
+}
+$id('auth-overlay').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const b = [...$id('auth-overlay').querySelectorAll('.au-btn')].find(x => x.offsetParent); if (b) b.click();
+});
+auInit();
+</script>
+<script>
+/* ===== EFFECTIVE: bảng COST-EFFECTIVE (nhập từ Excel, có tìm kiếm) ===== */
+const EFF_KEY = 'hs3d_effective_v1';
+let effData = [];
+try { effData = JSON.parse(localStorage.getItem(EFF_KEY)) || []; } catch (e) { effData = []; }
+/* Dữ liệu mặc định từ file DATA_COSTDOWN.xlsx (chỉ nạp 1 lần, không ghi đè dữ liệu đã có) */
+const EFF_SEED = [{"no": "1", "name": "Giá để checksheet", "qty": 150, "before": 7500000, "after": 3750000, "cost": 3750000}, {"no": "2", "name": "Hộp để tape Pin", "qty": 100, "before": 5500000, "after": 3000000, "cost": 2500000}, {"no": "3", "name": "Cover IP Camera", "qty": 100, "before": 4000000, "after": 1450000, "cost": 2550000}, {"no": "4", "name": "Hộp để tape", "qty": 200, "before": 8000000, "after": 4200000, "cost": 3800000}, {"no": "5", "name": "Giá cố định Scanner", "qty": 100, "before": 6000000, "after": 2250000, "cost": 3750000}, {"no": "6", "name": "Giá Sensor", "qty": 300, "before": 7500000, "after": 210000, "cost": 7290000}, {"no": "7", "name": "Giá treo thẻ kho", "qty": 600, "before": 18000000, "after": 4800000, "cost": 13200000}, {"no": "8", "name": "Chân ghế inox", "qty": 1600, "before": 8000000, "after": 5600000, "cost": 2400000}, {"no": "9", "name": "Nút bịt đầu inox", "qty": 3000, "before": 6000000, "after": 3300000, "cost": 2700000}, {"no": "10", "name": "Cover Smart Kit Screw", "qty": 400, "before": 2000000, "after": 240000, "cost": 1760000}, {"no": "11", "name": "C-Clip Plastic Spacer", "qty": 3000, "before": 7500000, "after": 3000000, "cost": 4500000}, {"no": "12", "name": "Giá để Note", "qty": 150, "before": 15000000, "after": 1950000, "cost": 13050000}];
+(function () {
+  const FLAG = 'hs3d_eff_seed_v1'; let done = false;
+  try { done = !!localStorage.getItem(FLAG); } catch (e) {}
+  if (done) return;
+  const have = new Set(effData.map(r => normKey(r.name)));
+  EFF_SEED.forEach(r => { if (!have.has(normKey(r.name))) effData.push(Object.assign({}, r, { no: String(effData.length + 1) })); });
+  effSave(); try { localStorage.setItem(FLAG, '1'); } catch (e) {}
+})();
+function effSave() {
+  const light = effData.map(r => { const c = Object.assign({}, r); delete c.imgB; delete c.imgA; delete c.image; return c; });
+  try { localStorage.setItem(EFF_KEY, JSON.stringify(light)); } catch (e) {}
+  idbSet('effective_v2', effData).catch(() => { try { localStorage.setItem(EFF_KEY, JSON.stringify(effData)); } catch (e) { showToast('Không lưu được bảng Effective (bộ nhớ đầy)!', 'fa-exclamation-triangle'); } });
+}
+idbGet('effective_v2').then(d => { if (Array.isArray(d) && d.length) { effData = d; renderEff(); } }).catch(() => {});
+function effPct(r) { return r.before > 0 ? Math.round(r.cost / r.before * 100) : 0; }
+function renderEff() {
+  const q = normKey(document.getElementById('eff-search').value || '');
+  const list = effData.map((r, i) => ({ r, i })).filter(x => !q || normKey(x.r.name).includes(q));
+  document.getElementById('eff-body').innerHTML = list.map(({ r, i }) => {
+    const pct = effPct(r), c = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--cyan)' : pct >= 30 ? 'var(--amber)' : 'var(--rose)';
+    const im = u => '<td class="p-img"><div class="p-img-box"><img src="' + escHtml(u) + '" alt="" onerror="this.onerror=null;this.src=PLACEHOLDER_IMG"></div></td>';
+    return '<tr data-i="' + i + '"><td class="p-no">' + escHtml(r.no) + '</td><td class="p-name">' + escHtml(r.name) + '</td><td class="p-need">' + fmtNum(r.qty) + '</td>' +
+      '<td class="e-b">' + fmtNum(r.before) + '</td>' + im(effImgB(r)) + '<td class="e-a">' + fmtNum(r.after) + '</td>' + im(effImgA(r)) + '<td class="e-c">' + fmtNum(r.cost) + '</td>' +
+      '<td class="p-fin"><span class="pct" style="color:' + c + '">' + pct + '%</span><div class="pct-bar"><div style="width:' + Math.max(0, Math.min(100, pct)) + '%;background:' + c + '"></div></div></td></tr>';
+  }).join('') || '<tr><td colspan="9" style="padding:2rem;color:#64748b;font-family:inherit">' + (effData.length ? 'Không tìm thấy sản phẩm phù hợp.' : 'Chưa có dữ liệu. Bấm IMPORT EXCEL để nạp bảng Effective.') + '</td></tr>';
+  const sb = list.reduce((a, x) => a + x.r.before, 0), sa = list.reduce((a, x) => a + x.r.after, 0), sc = list.reduce((a, x) => a + x.r.cost, 0);
+  document.getElementById('es-count').textContent = list.length;
+  document.getElementById('es-before').textContent = fmtNum(sb);
+  document.getElementById('es-after').textContent = fmtNum(sa);
+  document.getElementById('es-cost').textContent = fmtNum(sc);
+  document.getElementById('es-rate').textContent = (sb > 0 ? Math.round(sc / sb * 100) : 0) + '%';
+  document.getElementById('eff-foot').textContent = 'Showing ' + list.length + ' / ' + effData.length + ' products  •    •  Esc to close';
+}
+function openEff() { renderEff(); document.getElementById('eff-overlay').classList.add('open'); }
+function closeEff() { document.getElementById('eff-overlay').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (document.getElementById('eff-detail').classList.contains('open')) closeEffDetail(); else closeEff(); });
+
+/* nhấp đúp (chuột hoặc chạm 2 lần) */
+let effLast = { k: '', t: 0 }, effCur = -1;
+function effTap(k, fn) { const t = Date.now(); if (effLast.k === k && t - effLast.t < 420) { effLast = { k: '', t: 0 }; fn(); } else effLast = { k, t }; }
+function effRowTap(e) { const tr = e.target.closest('tr[data-i]'); if (!tr) return; const i = +tr.dataset.i; effTap('r' + i, () => openEffDetail(i)); }
+let effImgTarget = 'A';
+function effImgB(r) { return r.imgB || PLACEHOLDER_IMG; }
+function effImgA(r) {
+  if (r.imgA) return r.imgA; if (r.image) return r.image;
+  const ps = typeof products !== 'undefined' ? products : [], k = normKey(r.name);
+  const p = ps.find(x => normKey(x.name) === k) || (k.length > 3 ? ps.find(x => { const n = normKey(x.name); return n && (n.includes(k) || k.includes(n)); }) : null);
+  return (p && p.image) || PLACEHOLDER_IMG;
+}
+function openEffDetail(i) {
+  const r = effData[i]; if (!r) return; effCur = i; const $ = id => document.getElementById(id), pct = effPct(r);
+  const q = r.qty > 0, price = v => q ? fmtNum(Math.round(v / r.qty)) : '—';
+  $('ed-img-b').src = $('ed-bg-b').src = effImgB(r); $('ed-img-a').src = $('ed-bg-a').src = effImgA(r); $('ed-name').textContent = r.name;
+  $('et-qb').textContent = $('et-qa').textContent = q ? fmtNum(r.qty) : '—';
+  $('et-pb').textContent = price(r.before); $('et-pa').textContent = price(r.after); $('et-pc').textContent = q ? fmtNum(-Math.round(r.cost / r.qty)) : '—';
+  $('et-ab').textContent = fmtNum(r.before); $('et-aa').textContent = fmtNum(r.after); $('et-ac').textContent = fmtNum(-r.cost);
+  const c = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--cyan)' : pct >= 30 ? 'var(--amber)' : 'var(--rose)';
+  $('ed-rate').textContent = (pct >= 0 ? '▼ ' : '▲ ') + Math.abs(pct) + '%'; $('ed-rate').style.color = c;
+  $('ed-bar').style.cssText = 'height:100%;border-radius:99px;width:' + Math.max(0, Math.min(100, pct)) + '%;background:' + c;
+  $('eff-detail').classList.add('open');
+}
+function closeEffDetail() { effCur = -1; document.getElementById('eff-detail').classList.remove('open'); }
+function effPickImg(w) { effImgTarget = w; document.getElementById('eff-img-file').click(); }
+function effSetImage(file) {
+  if (!file || effCur < 0) return; const idx = effCur, w = effImgTarget, fr = new FileReader();
+  fr.onload = async () => { const out = await shrinkImage(fr.result, 1000); if (!effData[idx]) return; effData[idx][w === 'B' ? 'imgB' : 'imgA'] = out; effData[idx][w === 'B' ? 'manB' : 'manA'] = true; if (w === 'A') delete effData[idx].image; effSave(); openEffDetail(idx); renderEff(); showToast('Đã đổi ảnh ' + (w === 'B' ? 'Before' : 'After') + '!', 'fa-image'); };
+  fr.readAsDataURL(file);
+}
+
+async function parseEffXlsx(io) {
+  const wb = await io.text('xl/workbook.xml'); if (!wb) throw new Error('Không phải file .xlsx hợp lệ');
+  const sh = (wb.match(/<sheet\b[^>]*>/) || [])[0], rid = sh ? xmlAttrs(sh)['r:id'] : null;
+  const rels = xlsxRels(await io.text('xl/_rels/workbook.xml.rels'));
+  const path = rid && rels[rid] ? xlsxResolve('xl', rels[rid].Target) : 'xl/worksheets/sheet1.xml';
+  const sheetDir = path.slice(0, path.lastIndexOf('/')), sheetFile = path.slice(path.lastIndexOf('/') + 1);
+  const sst = [], sstTxt = await io.text('xl/sharedStrings.xml');
+  if (sstTxt) sstTxt.replace(/<si\b[^>]*>([\s\S]*?)<\/si>/g, (m, b) => {
+    b = b.replace(/<rPh\b[\s\S]*?<\/rPh>/g, ''); let t = ''; b.replace(/<t\b[^>]*>([\s\S]*?)<\/t>/g, (mm, x) => { t += xmlDecode(x); return mm; }); sst.push(t); return m; });
+  const xml = await io.text(path); if (!xml) throw new Error('Không đọc được sheet đầu tiên');
+  const cells = {}, vms = {};
+  xml.replace(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g, (m, at, inner) => {
+    const a = xmlAttrs(at), rm = a.r && a.r.match(/^([A-Z]+)(\d+)$/); if (!rm) return m;
+    inner = inner || ''; let v = null; const vv = inner.match(/<v>([\s\S]*?)<\/v>/), R = +rm[2], C = colIndex(a.r);
+    if (a.t === 's' && vv) v = sst[+vv[1]];
+    else if (a.t === 'inlineStr') { let t = ''; inner.replace(/<t\b[^>]*>([\s\S]*?)<\/t>/g, (mm, x) => { t += xmlDecode(x); return mm; }); v = t; }
+    else if (a.t === 'str' && vv) v = xmlDecode(vv[1]);
+    else if (vv && a.t !== 'e' && a.t !== 'b') v = parseFloat(vv[1]);
+    (cells[R] = cells[R] || {})[C] = v; if (a.vm) (vms[R] = vms[R] || {})[C] = +a.vm; return m;
+  });
+  const rowNums = Object.keys(cells).map(Number).sort((a, b) => a - b), T = (r, k) => normKey(cells[r][k]);
+  // --- tìm hàng tiêu đề (có thể 2 hàng: BEFORE/AFTER rồi COSTS/IMAGE)
+  let hr = 0;
+  for (const r of rowNums) {
+    if (r > 30) break; let nm = false, qt = false;
+    for (const k in cells[r]) { const t = T(r, k); if (t === 'name' || t === 'ten' || t.indexOf('san pham') >= 0) nm = true; if (t.indexOf('need') >= 0 || t.indexOf('qty') >= 0 || t.indexOf('so luong') >= 0 || t.indexOf('quantity') >= 0) qt = true; }
+    if (nm && qt) { hr = r; break; }
+  }
+  if (!hr) throw new Error('Không thấy hàng tiêu đề (NAME, NEED Q\'TY, BEFORE, AFTER)');
+  const col = {}, costCols = [], imgCols = []; let bStart = 0, aStart = 0, hdrEnd = hr;
+  for (let r = hr; r <= hr + 2; r++) {
+    if (!cells[r]) continue; let isHdr = r === hr;
+    for (const k in cells[r]) {
+      const t = T(r, k), c = +k;
+      if (r === hr && (t === 'no' || t === 'stt')) col.no = c;
+      else if (r === hr && (t === 'name' || t === 'ten' || t.indexOf('san pham') >= 0)) col.name = c;
+      else if (r === hr && (t.indexOf('need') >= 0 || t.indexOf('qty') >= 0 || t.indexOf('so luong') >= 0 || t.indexOf('quantity') >= 0)) col.qty = c;
+      else if (t.indexOf('costdown') >= 0 || t.indexOf('cost down') >= 0 || t.indexOf('saving') >= 0) { col.cost = c; isHdr = true; }
+      else if (t.indexOf('cost') === 0) { costCols.push(c); isHdr = true; }
+      else if (t.indexOf('image') >= 0 || t.indexOf('hinh anh') >= 0 || t === 'anh') { imgCols.push(c); isHdr = true; }
+      else if (t.indexOf('before') === 0) { bStart = c; isHdr = true; }
+      else if (t.indexOf('after') === 0) { aStart = c; isHdr = true; }
+    }
+    if (isHdr) hdrEnd = r; else break;
+  }
+  costCols.sort((a, b) => a - b); imgCols.sort((a, b) => a - b);
+  col.before = costCols[0] || bStart; col.after = costCols[1] || aStart;
+  if (imgCols.length >= 2) { col.imgB = imgCols[0]; col.imgA = imgCols[1]; }
+  else if (imgCols.length === 1) { if (aStart && imgCols[0] >= aStart) col.imgA = imgCols[0]; else col.imgB = imgCols[0]; }
+  if (!col.name || !col.before || !col.after) throw new Error('Thiếu cột NAME / BEFORE / AFTER');
+  // --- ảnh: nổi (floating) + ảnh trong ô -> gom hết, rồi gán theo hàng/cột (Before / After)
+  const imgs = {}, found = [], media = async (p) => {
+    const mime = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', bmp: 'image/bmp' }[(p.split('.').pop() || '').toLowerCase()];
+    if (!mime) return null; const b = await io.b64(p); return b ? 'data:' + mime + ';base64,' + b : null; };
+  const sRels = xlsxRels(await io.text(sheetDir + '/_rels/' + sheetFile + '.rels')); let drawPath = null;
+  for (const id in sRels) if (/\/drawing$/.test(sRels[id].Type || '')) drawPath = xlsxResolve(sheetDir, sRels[id].Target);
+  if (drawPath) {
+    const dx = await io.text(drawPath), dRels = xlsxRels(await io.text(drawPath.replace(/([^\/]+)$/, '_rels/$1.rels')));
+    const anchors = (dx || '').match(/<(?:\w+:)?(?:twoCellAnchor|oneCellAnchor)\b[\s\S]*?<\/(?:\w+:)?(?:twoCellAnchor|oneCellAnchor)>/g) || [];
+    for (const an of anchors) {
+      const g = (tag, what) => { const m = an.match(new RegExp('<(?:\\w+:)?' + tag + '>[\\s\\S]*?<(?:\\w+:)?' + what + '>(\\d+)<')); return m ? +m[1] : null; };
+      const fr = g('from', 'row'), fc = g('from', 'col'), tr = g('to', 'row'), tc = g('to', 'col'), e = an.match(/\w+:embed="([^"]+)"/);
+      if (fr == null || fc == null || !e || !dRels[e[1]]) continue;
+      const u = await media(xlsxResolve(drawPath.slice(0, drawPath.lastIndexOf('/')), dRels[e[1]].Target));
+      if (u) found.push({ row: Math.floor((fr + (tr == null ? fr : tr)) / 2) + 1, col: Math.floor((fc + (tc == null ? fc : tc)) / 2) + 1, url: u });
+    }
+  }
+  const rvx = await io.text('xl/richData/rdrichvalue.xml');
+  if (rvx) {
+    const rvList = []; rvx.replace(/<rv\b[^>]*>([\s\S]*?)<\/rv>/g, (m, b) => { const v = b.match(/<v>([\s\S]*?)<\/v>/); rvList.push(v ? +v[1] : -1); return m; });
+    const relIds = []; ((await io.text('xl/richData/richValueRel.xml')) || '').replace(/<rel\b[^>]*>/g, t => { relIds.push(xmlAttrs(t)['r:id']); return t; });
+    const rr = xlsxRels(await io.text('xl/richData/_rels/richValueRel.xml.rels'));
+    for (const r in vms) for (const k in vms[r]) {
+      const id = relIds[rvList[vms[r][k] - 1]];
+      if (id && rr[id]) { const u = await media(xlsxResolve('xl/richData', rr[id].Target)); if (u) found.push({ row: +r, col: +k, url: u }); }
+    }
+  }
+  const body = found.filter(f => f.row > hdrEnd);
+  if (!col.imgB && !col.imgA && body.length) {          // không thấy tiêu đề IMAGE -> suy ra cột ảnh từ vị trí ảnh
+    const uc = [...new Set(body.map(f => f.col))].sort((x, y) => x - y);
+    if (uc.length >= 2) { col.imgB = uc[0]; col.imgA = uc[uc.length - 1]; }
+    else if (col.after && uc[0] >= col.after) col.imgA = uc[0]; else col.imgB = uc[0];
+  }
+  for (const f of body) {
+    const cand = [['B', col.imgB], ['A', col.imgA]].filter(x => x[1]); if (!cand.length) continue;
+    cand.sort((x, y) => Math.abs(x[1] - f.col) - Math.abs(y[1] - f.col)); const w = cand[0][0];
+    (imgs[f.row] = imgs[f.row] || {}); if (!imgs[f.row][w]) imgs[f.row][w] = f.url;
+  }
+  // --- dòng dữ liệu
+  const rows = [];
+  for (const r of rowNums) {
+    if (r <= hdrEnd) continue; const rc = cells[r], nm = rc[col.name];
+    if (nm == null || String(nm).trim() === '' || /^(total|tong)\b/.test(normKey(nm))) continue;
+    const before = toNum(rc[col.before]), after = toNum(rc[col.after]); if (!before && !after) continue;
+    const cost = col.cost && rc[col.cost] != null && rc[col.cost] !== '' ? toNum(rc[col.cost]) : before - after;
+    rows.push({ no: String(rows.length + 1), name: String(nm).trim(), qty: col.qty ? toNum(rc[col.qty]) : 0, before, after, cost, imgB: (imgs[r] || {}).B || '', imgA: (imgs[r] || {}).A || '' });
+  }
+  return rows;
+}
+async function importEffExcel(file) {
+  if (!file) return; let imgInfo = '';
+  if (!window.JSZip) return showToast('Không tải được thư viện đọc Excel (cần internet)!', 'fa-exclamation-triangle');
+  try {
+    const rows = await parseEffXlsx(jszipIO(await JSZip.loadAsync(file)));
+    if (!rows.length) return showToast('File không có dòng sản phẩm nào!', 'fa-exclamation-triangle');
+    const old = {}; effData.forEach(r => { old[normKey(r.name)] = r; });
+    let nB = 0, nA = 0;
+    for (const r of rows) {
+      if (r.imgB) { r.imgB = await shrinkImage(r.imgB, 900); nB++; } if (r.imgA) { r.imgA = await shrinkImage(r.imgA, 900); nA++; }
+      const o = old[normKey(r.name)];
+      if (o) {
+        if (!r.imgB && o.manB && o.imgB) { r.imgB = o.imgB; r.manB = true; }
+        if (!r.imgA && o.manA && o.imgA) { r.imgA = o.imgA; r.manA = true; }
+        if (!r.imgA && o.image) { r.imgA = o.image; r.manA = true; }
+      }
+    }
+    imgInfo = nB || nA ? ' • ảnh trong file: Before ' + nB + ', After ' + nA : '';
+    if (!nB && !nA) showToast('Không tìm thấy ảnh trong file Excel. Hãy chắc ảnh nằm trong các cột IMAGE (Before/After).', 'fa-exclamation-triangle');
+    effData = rows; effSave(); document.getElementById('eff-search').value = ''; renderEff();
+    showToast('Đã nạp ' + rows.length + ' sản phẩm vào bảng Effective' + imgInfo + '!', 'fa-circle-check');
+  } catch (e) { showToast('Lỗi đọc file: ' + (e.message || e), 'fa-exclamation-triangle'); }
+}
+</script>
+<script>
+/* ===== KHÓA ỨNG DỤNG THEO THÁNG =====
+   - Từ mồng 5 hàng tháng, ứng dụng khóa 1 lần: nhập mật khẩu admin của tháng đó mới dùng được.
+   - 3 mật khẩu xoay vòng theo tháng: tháng 1,4,7,10 = MK #1 | 2,5,8,11 = MK #2 | 3,6,9,12 = MK #3.
+   - Ctrl+T (hoặc Alt+T) khóa ngay. (Mật khẩu chỉ lưu dạng mã hóa SHA-256.) */
+const LOCK_DAY = 5, LOCK_KEY = 'hs3d_lock_ok_period', LOCK_SALT = 'hs3d-lock-v1:';
+const LOCK_HASH = ['bd8a5c459c0a4ef60ef131e559664014ebd05f14694bc7e0950bb171024613c0', '7c4b291e75fb7abe74dd9f8bf3c74ad767500f990c4832e9a7c984f2c60ca25e', '56d3e36b0121395344bb9e441b77045a08af4b3b2c6658eddb442078ddd3428b'];
+let lockMem = null, lockFails = 0, lockWait = 0;
+function sha256(ascii) {
+  function rr(v, a) { return (v >>> a) | (v << (32 - a)); }
+  var mp = Math.pow(2, 32), res = '', words = [], bl = ascii.length * 8;
+  var hash = sha256.h = sha256.h || [], k = sha256.k = sha256.k || [], pc = k.length, comp = {};
+  for (var c = 2; pc < 64; c++) { if (!comp[c]) { for (var i = 0; i < 313; i += c) comp[i] = c; hash[pc] = (Math.pow(c, .5) * mp) | 0; k[pc++] = (Math.pow(c, 1 / 3) * mp) | 0; } }
+  ascii += '\x80'; while (ascii.length % 64 - 56) ascii += '\x00';
+  for (var i = 0; i < ascii.length; i++) { var j = ascii.charCodeAt(i); if (j >> 8) return ''; words[i >> 2] |= j << ((3 - i) % 4) * 8; }
+  words[words.length] = ((bl / mp) | 0); words[words.length] = (bl);
+  for (var j = 0; j < words.length;) {
+    var w = words.slice(j, j += 16), oh = hash; hash = hash.slice(0, 8);
+    for (var i = 0; i < 64; i++) {
+      var w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
+      var t1 = hash[7] + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rr(w15, 7) ^ rr(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rr(w2, 17) ^ rr(w2, 19) ^ (w2 >>> 10))) | 0);
+      var t2 = (rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+      hash = [(t1 + t2) | 0].concat(hash); hash[4] = (hash[4] + t1) | 0;
+    }
+    for (var i = 0; i < 8; i++) hash[i] = (hash[i] + oh[i]) | 0;
+  }
+  for (var i = 0; i < 8; i++) for (var j = 3; j + 1; j--) { var b = (hash[i] >> (j * 8)) & 255; res += ((b < 16) ? 0 : '') + b.toString(16); }
+  return res;
+}
+/* kỳ khóa hiện tại: bắt đầu từ mồng 5 của tháng (trước mồng 5 vẫn thuộc kỳ của tháng trước) */
+function lockPeriod() { const d = new Date(); let y = d.getFullYear(), m = d.getMonth() + 1; if (d.getDate() < LOCK_DAY) { m--; if (m < 1) { m = 12; y--; } } return { y, m, key: y + '-' + m }; }
+function lockIsOpen() { const k = lockPeriod().key; try { return localStorage.getItem(LOCK_KEY) === k; } catch (e) { return lockMem === k; } }
+function lockSetOpen(k) { lockMem = k; try { if (k) localStorage.setItem(LOCK_KEY, k); else localStorage.removeItem(LOCK_KEY); } catch (e) {} }
+function lockInert(on) { [...document.body.children].forEach(el => { if (el.id === 'lock-overlay' || el.tagName === 'SCRIPT') return; if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); }); }
+function lockShow() {
+  const p = lockPeriod(), ov = document.getElementById('lock-overlay'), pw = document.getElementById('lock-pw');
+  document.getElementById('lock-sub').textContent = 'Kỳ khóa tháng ' + p.m + '/' + p.y + ' · Nhập mật khẩu admin để tiếp tục';
+  pw.value = ''; document.getElementById('lock-msg').textContent = ''; ov.classList.remove('off'); lockInert(true); setTimeout(() => pw.focus(), 50);
+}
+function lockNow() { lockSetOpen(null); lockShow(); }
+function lockTry() {
+  const msg = document.getElementById('lock-msg'), pw = document.getElementById('lock-pw').value.trim();
+  if (Date.now() < lockWait) { msg.className = 'au-msg'; msg.textContent = 'Sai quá nhiều lần, đợi ' + Math.ceil((lockWait - Date.now()) / 1000) + ' giây.'; return; }
+  const p = lockPeriod();
+  if (pw && sha256(LOCK_SALT + pw) === LOCK_HASH[(p.m - 1) % 3]) {
+    lockFails = 0; lockSetOpen(p.key); document.getElementById('lock-overlay').classList.add('off'); lockInert(false);
+    if (typeof showToast === 'function') showToast('Đã mở khóa tháng ' + p.m + '/' + p.y + '!', 'fa-lock-open');
+  } else {
+    if (++lockFails >= 5) { lockWait = Date.now() + 30000; lockFails = 0; }
+    msg.className = 'au-msg'; msg.textContent = 'Mật khẩu không đúng.'; document.getElementById('lock-pw').select();
+  }
+}
+function lockCheck() { if (!lockIsOpen() && document.getElementById('lock-overlay').classList.contains('off')) lockShow(); }
+document.addEventListener('keydown', e => {
+  const t = e.key && e.key.toLowerCase() === 't';
+  if (t && !e.shiftKey && ((e.ctrlKey || e.metaKey) !== e.altKey)) { e.preventDefault(); e.stopPropagation(); lockNow(); }
+}, true);
+document.getElementById('lock-overlay').addEventListener('keydown', e => { if (e.key === 'Enter') lockTry(); });
+setInterval(lockCheck, 30000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) lockCheck(); });
+if (lockIsOpen()) { document.getElementById('lock-overlay').classList.add('off'); } else { lockShow(); }
+</script>
+</body>
+</html>
